@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@astrojs/db": "^0.21.3",
+    "@astrojs/node": "^11.1.2",
+    "@astrojs/vercel": "^11.0.5",
     "astro": "^7.1.5"
   }
 }
