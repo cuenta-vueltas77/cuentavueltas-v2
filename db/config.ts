@@ -5,7 +5,7 @@ const Votos = defineTable({
     id: column.number({ primaryKey: true }),
     categoria: column.text(),
     piloto: column.text(),
-    fecha: column.date({ default: new Date() }),
+    fecha: column.date(), 
   }
 });
 
@@ -28,9 +28,9 @@ const Noticias = defineTable({
     autor: column.text({ default: 'Redacción CV77' }),
     categorias: column.json(),
     tipo: column.text({ default: 'Noticia general' }),
-    imagenUrl: column.text({ default: '' }),       // Portada
-    audioUrl: column.text({ default: '' }),        // Audio opcional
-    galeriaUrls: column.json({ default: [] }),     // Fotos adicionales
+    imagenUrl: column.text({ default: '' }),       
+    audioUrl: column.text({ default: '' }),        
+    galeriaUrls: column.json(), 
     destacada: column.boolean({ default: false }),
     mostrarInicio: column.boolean({ default: true }),
     cuerpo: column.text(),
