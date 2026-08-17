@@ -1,0 +1,123 @@
+---
+import "../styles/header.css";
+---
+
+<header>
+  <div class="contenedor">
+    <!-- LOGO -->
+    <a class="logo" href="/">
+      <img src="/imagenes/logo/logoCV77.png" alt="Cuenta Vueltas 77" />
+    </a>
+
+    <!-- NAVEGACIÓN PRINCIPAL -->
+    <nav>
+      <a href="/">Inicio</a>
+
+      <!-- DESPLEGABLE CATEGORÍAS -->
+      <div class="dropdown">
+        <button class="dropdown-boton">
+          Categorías
+          <span class="dropdown-flecha">▼</span>
+        </button>
+
+        <div class="dropdown-menu">
+          <a
+            href="/categorias/tc-austral"
+            class="dropdown-item"
+            style="--color-categoria: var(--cat-austral);"
+          >
+            <span class="dropdown-punto"></span>
+            TC Austral
+          </a>
+          <a
+            href="/categorias/tc-patagonico"
+            class="dropdown-item"
+            style="--color-categoria: var(--cat-patagonico);"
+          >
+            <span class="dropdown-punto"></span>
+            TC Patagónico
+          </a>
+          <a
+            href="/categorias/r12"
+            class="dropdown-item"
+            style="--color-categoria: var(--cat-r12);"
+          >
+            <span class="dropdown-punto"></span>
+            Monomarca R-12
+          </a>
+          <a
+            href="/categorias/tp-gol"
+            class="dropdown-item"
+            style="--color-categoria: var(--cat-tpgol);"
+          >
+            <span class="dropdown-punto"></span>
+            TP Gol
+          </a>
+          <a
+            href="/categorias/tp1100"
+            class="dropdown-item"
+            style="--color-categoria: var(--cat-tp1100);"
+          >
+            <span class="dropdown-punto"></span>
+            TP 1100
+          </a>
+        </div>
+      </div>
+
+      <!-- ENLACES DIRECTOS -->
+      <a href="/la-banda-del-sur">La Banda del Sur</a>
+      <a href="/calendario">Calendario</a>
+
+      <!-- DESPLEGABLE MÁS (Le sumamos la clase dropdown-derecha) -->
+      <div class="dropdown dropdown-derecha">
+        <button class="dropdown-boton">
+          Más
+          <span class="dropdown-flecha">▼</span>
+        </button>
+
+        <div class="dropdown-menu">
+          <a
+            href="/piloto-de-la-fecha"
+            class="dropdown-item"
+            style="--color-categoria: #e10600;"
+          >
+            <span class="dropdown-punto"></span>
+            Piloto de la fecha
+          </a>
+          <a
+            href="/tienda"
+            class="dropdown-item"
+            style="--color-categoria: #ffffff;"
+          >
+            <span class="dropdown-punto"></span>
+            Tienda
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+<script>
+  document.addEventListener('click', (e) => {
+    const boton = e.target.closest('.dropdown-boton');
+
+    if (boton) {
+      e.stopPropagation();
+      const dropdown = boton.closest('.dropdown');
+      
+      if (dropdown.classList.contains('activo')) {
+        dropdown.classList.remove('activo');
+        // Un pequeño respiro de 10ms para obligar al celular a soltar el foco visual
+        setTimeout(() => boton.blur(), 1);
+      } else {
+        document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('activo'));
+        dropdown.classList.add('activo');
+      }
+      return;
+    }
+
+    // Si hace clic afuera, cierra todo y limpia el foco
+    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('activo'));
+    document.querySelectorAll('.dropdown-boton').forEach(b => b.blur());
+  });
+</script>

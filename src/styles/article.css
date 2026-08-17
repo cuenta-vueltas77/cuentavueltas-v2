@@ -1,0 +1,305 @@
+.nota {
+  width: min(1100px, calc(100% - 40px));
+  margin: auto ;
+}
+
+.nota__encabezado {
+  max-width: 900px; 
+  margin: 0 auto; 
+  padding: 0 10px;
+  text-align: left; /* <- Agregá esto si querés las letras centradas */
+  background: transparent;
+  margin-bottom: 40px;
+}
+
+.nota__titulo {
+  margin: 0;
+  font-size: clamp(2.4rem, 3vw, 4.8rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+}
+
+.nota__bajada {
+  max-width: 800px;
+  margin: 22px 0 0;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+  color: #c7c7c7;
+}
+
+.nota__imagen-principal {
+  display: block;
+
+  width: 100%;
+  max-width: 750px;
+  max-height: 400px;
+
+  margin: 0 auto 48px;
+
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.nota__contenido {
+  max-width: 780px;
+  font-family: "Inter", sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #ededed;
+  text-align: justify;
+  margin: 0 auto;
+  
+}
+
+.nota__contenido h2 {
+  margin: 480px 0 18px;
+  font-family: "Rajdhani", sans-serif;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.nota__contenido p {
+  margin: 0 0 24px;
+}
+
+.nota__contenido img {
+  display: block;
+  width: 100%;
+  margin: 36px 0;
+  border-radius: 10px;
+}
+
+.nota__contenido a {
+  color: #ff2020;
+}
+
+@media (max-width: 700px) {
+  .nota {
+    width: min(100% - 28px, 1100px);
+    margin-top: 34px;
+  }
+
+  .nota__encabezado {
+    margin-bottom: 26px;
+  }
+
+  .nota__imagen-principal {
+    margin-bottom: 34px;
+    border-radius: 8px;
+  }
+
+  .nota__contenido {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+}
+/* --- Galería de fotos en la nota --- */
+.nota__galeria {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.nota__galeria-titulo {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.5rem;
+  color: #ffffff;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase;
+  border-left: 4px solid #ff0000; /* Detalle rojo CV77 */
+  padding-left: 0.6rem;
+}
+
+.nota__galeria-grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.nota__galeria-grilla img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: #1a1a1a;
+  cursor: pointer;
+}
+
+.nota__galeria-grilla img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+/* --- Lightbox / Zoom de fotos --- */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.92);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+/* Cuando se activa el modal */
+.lightbox.activo {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lightbox__img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+  transform: scale(0.95);
+  transition: transform 0.25s ease;
+}
+
+.lightbox.activo .lightbox__img {
+  transform: scale(1);
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  color: #ffffff;
+  font-size: 3rem;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.lightbox__close:hover {
+  color: #ff0000; /* Detalle rojo CV77 */
+}
+
+/* --- Flechas de Navegación del Lightbox --- */
+.lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ff0000; /* Rojo CV77 */
+  font-size: 3.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  padding: 1rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+  z-index: 10000;
+  line-height: 1;
+}
+
+.lightbox__nav:hover {
+  color: #ffffff; /* Se ilumina en blanco al pasar el mouse */
+  transform: translateY(-50%) scale(1.15);
+}
+
+.lightbox__prev {
+  left: 15px;
+}
+
+.lightbox__next {
+  right: 15px;
+}
+
+/* Para que en celulares no queden gigantes y no tapen la foto */
+@media (max-width: 600px) {
+  .lightbox__nav {
+    font-size: 2.5rem;
+    padding: 0.5rem;
+  }
+  .lightbox__prev {
+    left: 5px;
+  }
+  .lightbox__next {
+    right: 5px;
+  }
+}
+/* --- Botones de Compartir Nota --- */
+.nota__compartir {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.2rem;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.nota__compartir-botones {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.btn-compartir {
+  display: inline-flex;       /* Alineación perfecta de ícono + texto */
+  align-items: center;        /* Centrado vertical */
+  gap: 0.45rem;               /* Espacio entre el logo y la palabra */
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #ffffff;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-compartir:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.icono-logo {
+  flex-shrink: 0;             /* Evita que el logo se deforme */
+  display: block;
+}
+
+/* Color para WhatsApp */
+.btn-wsp {
+  background-color: #25d366;
+}
+
+/* Color para Facebook */
+.btn-fb {
+  background-color: #1877f2;
+}
+
+/* Color para X / Twitter */
+.btn-tw {
+  background-color: #0f1419;
+  border: 1px solid #333333;
+}
+/* Color / Gradiente oficial para Instagram */
+.btn-ig {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+.nota__fecha {
+  display: block;
+  font-family: "Inter", sans-serif;
+  color: #aaaaaa; /* El gris de las tarjetas */
+  font-size: 0.9rem;
+  font-weight: bold; /* Letra un poquito más gruesa */
+  margin-bottom: 15px; /* Le da espacio antes de que empiece el título */
+  text-align: justify; /* Centrado para que acompañe a las migas de pan */
+}

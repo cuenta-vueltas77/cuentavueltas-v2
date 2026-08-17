@@ -1,0 +1,81 @@
+---
+export const prerender = false; // 1. OBLIGATORIO: Lee de Astro DB al instante sin esperar rebuid
+
+import { getCollection } from "astro:content";
+import { db, Noticias } from "astro:db";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import NewsCard from "../components/NewsCard.astro";
+import Header from "../components/Header.astro";
+
+// 2. Traemos las notas nuevas (Astro DB) y las viejas (Markdown)
+const notasDB = await db.select().from(Noticias).all();
+const notasMD = await getCollection("noticias");
+
+// 3. UNIFICACIÓN HÍBRIDA: Armamos una lista única con el formato exacto que espera tu NewsCard
+const todasLasNotas = [
+  // A) Mapeamos las notas nuevas de Astro DB
+  ...notasDB.map((nota) => ({
+    id: String(nota.id),
+    data: {
+      titulo: nota.titulo,
+      imagen: nota.imagenUrl,
+      // Lo convertimos en array [ "tp1100" ] para que tu .categorias[0] funcione impecable
+      categorias: Array.isArray(nota.categorias)
+        ? nota.categorias
+        : [nota.categorias || "general"],
+      tipo: nota.tipo || "nota",
+      fecha: (nota.fecha && !isNaN(new Date(nota.fecha).getTime()))
+  ? new Date(nota.fecha)
+  : new Date(),
+      mostrarEnInicio: nota.mostrarInicio !== false,
+    },
+  })),
+
+  // B) Mapeamos las notas viejas de Markdown
+  ...notasMD.map((nota) => ({
+    id: nota.id || nota.slug,
+    data: {
+      titulo: nota.data.titulo,
+      imagen: nota.data.imagen,
+      categorias: Array.isArray(nota.data.categorias)
+        ? nota.data.categorias
+        : [nota.data.categorias || "general"],
+      tipo: nota.data.tipo || "nota",
+      fecha: (nota.fecha && !isNaN(new Date(nota.fecha).getTime()))
+  ? new Date(nota.fecha)
+  : new Date(),
+      // Cubrimos tanto si lo escribiste como mostrarEnInicio o mostrarInicio
+      mostrarEnInicio:
+        nota.data.mostrarEnInicio !== false && nota.data.mostrarInicio !== false,
+    },
+  })),
+];
+
+// 4. Filtramos las que van al Inicio y ordenamos de más NUEVA a más VIEJA
+const noticiasDelInicio = todasLasNotas
+  .filter((noticia) => noticia.data.mostrarEnInicio)
+  .sort((a, b) => b.data.fecha.getTime() - a.data.fecha.getTime());
+---
+
+<BaseLayout titulo="Inicio">
+  <section class="seccion-noticias">
+    <div class="seccion-noticias__encabezado">
+      <h1>Últimas noticias</h1>
+    </div>
+
+    <div class="news-grid">
+      {
+        noticiasDelInicio.map((noticia) => (
+          <NewsCard
+            titulo={noticia.data.titulo}
+            imagen={noticia.data.imagen}
+            categoria={noticia.data.categorias[0]}
+            tipo={noticia.data.tipo}
+            fecha={noticia.data.fecha}
+            url={`/noticias/${noticia.id}`}
+          />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

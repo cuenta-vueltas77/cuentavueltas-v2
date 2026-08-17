@@ -1,0 +1,72 @@
+---
+// src/layouts/BaseLayout.astro
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro'; 
+
+interface Props {
+  titulo: string;
+  bajada?: string;
+  imagen?: string;
+}
+
+const {
+  titulo,
+  bajada = "Todas las novedades del automovilismo zonal del sur",
+  imagen = "/favicon.svg",
+} = Astro.props;
+
+// Armamos las URL absolutas (imprescindible para que WhatsApp y Facebook encuentren la foto)
+const urlActual = Astro.url.href;
+const imagenAbsoluta = new URL(imagen, Astro.site || Astro.url.origin).href;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Título y descripción SEO básicas -->
+    <title>{titulo} | Cuenta Vueltas 77</title>
+    <meta name="description" content={bajada} />
+
+    <!-- 🎴 OPEN GRAPH (Tarjetas para WhatsApp, Facebook, Telegram, etc.) -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={`${titulo} | Cuenta Vueltas 77`} />
+    <meta property="og:description" content={bajada} />
+    <meta property="og:image" content={imagenAbsoluta} />
+    <meta property="og:url" content={urlActual} />
+    <meta property="og:site_name" content="Cuenta Vueltas 77" />
+
+    <!-- 🐦 TWITTER / X CARDS -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${titulo} | Cuenta Vueltas 77`} />
+    <meta name="twitter:description" content={bajada} />
+    <meta name="twitter:image" content={imagenAbsoluta} />
+  </head>
+
+  <body>
+    <!-- 1. ACÁ CARGAMOS LA BARRA SUPERIOR -->
+    <Header />
+
+    <main>
+      <slot />
+    </main>
+    <Footer />  
+  </body>
+
+</html>

@@ -1,0 +1,81 @@
+---
+import '../styles/cards.css';
+import '/src/styles/cards.css';
+interface Props {
+  titulo: string;
+  imagen: string;
+  categoria: string;
+  tipo: string;
+  fecha: Date;
+  url: string;
+}
+
+const {
+  titulo,
+  imagen,
+  categoria,
+  tipo,
+  fecha,
+  url,
+} = Astro.props;
+
+const iconos: Record<string, string> = {
+  "cronica-categoria": "🏁",
+  previa: "📰",
+  entrevista: "🎤",
+  galeria: "📷",
+  video: "🎥",
+  tecnica: "🔧",
+  campeonato: "🏆",
+};
+
+const nombresCategorias: Record<string, string> = {
+  "tc-austral": "TC Austral",
+  "tc-patagonico": "TC Patagónico",
+  "tp-gol": "TP Gol",
+  r12: "Monomarca R12",
+  tp1100: "TP 1100",
+};
+
+const icono = iconos[tipo] ?? "📰";
+const nombreCategoria = nombresCategorias[categoria] ?? categoria;
+
+const fechaFormateada = fecha.toLocaleDateString("es-AR", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+});
+---
+
+<article class="news-card">
+  <a href={url} class="news-card__imagen-enlace">
+    <img
+      src={imagen}
+      alt={titulo}
+      class="news-card__imagen"
+      loading="lazy"
+    />
+  </a>
+
+  <div class="news-card__contenido">
+    <div class="news-card__meta">
+      <span class="news-card__icono" aria-hidden="true">{icono}</span>
+
+      <span class={`news-card__categoria news-card__categoria--${categoria}`}>
+        {nombreCategoria}
+      </span>
+    </div>
+
+    <h2 class="news-card__titulo">
+      <a href={url}>{titulo}</a>
+    </h2>
+
+    <time class="news-card__fecha" datetime={fecha.toISOString()}>
+      {fechaFormateada}
+    </time>
+
+    <a href={url} class="news-card__leer">
+      Leer nota →
+    </a>
+  </div>
+</article>

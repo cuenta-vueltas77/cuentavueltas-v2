@@ -1,0 +1,329 @@
+:root {
+  /* ===== COLORES ===== */
+  --color-fondo: #0d0d0d;
+  --color-superficie: #151515;
+  --color-borde: #262626;
+
+  --color-texto: #ffffff;
+  --color-texto-secundario: #bdbdbd;
+
+  --color-rojo: #e10600;
+
+  /* Categorías */
+  --cat-austral: #1565c0;
+  --cat-r12: #2e7d32;
+  --cat-tpgol: #f9a825;
+  --cat-patagonico: #ef6c00;
+  --cat-tp1100: #8e24aa;
+
+  /* ===== ESPACIADOS ===== */
+  --radio: 18px;
+
+  --sombra: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: "Inter", sans-serif;
+  line-height: 1.7;
+}
+
+main {
+  max-width: 1400px;
+  margin: auto;
+  padding: 40px;
+}
+
+h1,
+h2,
+h3,
+h4,
+nav,
+button {
+  font-family: "Rajdhani", sans-serif;
+}
+
+h1 {
+  font-size: 3rem;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+p {
+  margin-bottom: 18px;
+}
+
+/* ================= HEADER ================= */
+
+header {
+  background: #000;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+header .contenedor {
+  max-width: 1400px;
+  margin: auto;
+  padding: 22px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo img {
+  display: block;
+  width: 210px;
+  height: auto;
+}
+
+nav {
+  display: flex;
+  gap: 40px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+  transition: 0.25s;
+}
+
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 0;
+  height: 2px;
+  background: var(--color-rojo);
+  transition: 0.25s;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+/* ================= INICIO & GRILLA DE NOTICIAS ================= */
+
+.seccion-noticias__encabezado {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.seccion-noticias__encabezado h1 {
+  position: relative;
+  margin: 0;
+}
+
+.seccion-noticias__encabezado h1::after {
+  content: "";
+  display: block;
+  width: 78px;
+  height: 3px;
+  margin-top: 10px;
+  background: var(--color-rojo);
+}
+
+.seccion-noticias h1 {
+  margin-bottom: 32px;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 1000px) {
+  .news-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  main {
+    padding: 24px 16px;
+  }
+
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================= DROPDOWN MENU ================= */
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-boton {
+  background: none;
+  border: none;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-boton::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 0;
+  height: 3px;
+  background: red;
+  transition: width 0.3s ease;
+}
+
+.dropdown-boton:hover::after {
+  width: 100%;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  min-width: 220px;
+  padding: 12px;
+  background: #0b0b0b;
+  border: 1px solid #2b2b2b;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+  z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  color: white;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 6px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: #181818;
+  color: var(--color-categoria);
+}
+
+.dropdown-punto {
+  width: 9px;
+  height: 9px;
+  background: var(--color-categoria);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dropdown-flecha {
+  font-size: 0.7rem;
+  transition: transform 0.25s ease;
+}
+
+.dropdown:hover .dropdown-flecha {
+  transform: rotate(180deg);
+}
+/* --- ARREGLO DEL FOOTER PEGADO AL FONDO --- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Garantiza que el body mida como mínimo toda la pantalla */
+}
+
+main {
+  flex: 1; 
+  width: 100%;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* ¡ESTO BLOQUEA CUALQUIER DESBORDE HORIZONTAL! */
+}
+/* --- GRILLA RESPONSIVA INTELIGENTE --- */
+.noticias-grid {
+  display: grid;
+  /* Se adapta sola: crea columnas de mínimo 300px. Si no entran, las baja de renglón */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem; /* Margen de seguridad a los costados en celulares */
+}
+
+/* --- TARJETA DE NOTICIA --- */
+.noticia-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #111; /* O tu fondo de tarjeta actual */
+  border-radius: 12px;
+  overflow: hidden; /* Para que la foto respete los bordes redondos */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* --- IMAGEN DE LA TARJETA (Nunca se deforma) --- */
+.noticia-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover; /* Mantiene la proporción de las fotos de los autos */
+  display: block;
+}
+
+/* --- AJUSTE EXTRA PARA CELULARES CHICOS --- */
+@media (max-width: 600px) {
+  .noticias-grid {
+    grid-template-columns: 1fr; /* 1 sola columna que ocupa todo el ancho */
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+}

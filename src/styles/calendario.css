@@ -1,0 +1,169 @@
+/* src/styles/calendario.css */
+
+.cv-calendario-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+  color: #ffffff;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.cv-header {
+  border-bottom: 2px solid #e10600;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.cv-header h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin: 0;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.cv-header h1 span {
+  color: #e10600;
+}
+
+.cv-header p {
+  color: #aaaaaa;
+  margin: 5px 0 0;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.cv-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cv-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 20px;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.cv-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.cv-row.proxima {
+  background: rgba(225, 6, 0, 0.08);
+  border-left: 4px solid #e10600;
+}
+
+.cv-row.finalizada {
+  opacity: 0.6;
+}
+
+.cv-date {
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-month {
+  color: #e10600;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  display: block;
+}
+
+.cv-days {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 2px;
+}
+
+.cv-info {
+  flex: 1;
+}
+
+.cv-round {
+  color: #e10600;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+}
+
+.cv-info h3 {
+  font-size: 1.4rem;
+  margin: 3px 0;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.cv-info p {
+  color: #aaaaaa;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.cv-status {
+  min-width: 160px;
+  text-align: right;
+}
+
+.cv-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.cv-badge.proxima {
+  background: #e10600;
+  color: #ffffff;
+}
+
+.cv-badge.finalizada {
+  background: rgba(255, 255, 255, 0.1);
+  color: #aaaaaa;
+}
+
+.cv-badge.futura {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .cv-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px 10px;
+  }
+
+  .cv-date {
+    flex-direction: row;
+    gap: 8px;
+    align-items: baseline;
+  }
+
+  .cv-info, .cv-status {
+    width: 100%;
+    text-align: left;
+  }
+
+  .cv-badge {
+    display: block;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

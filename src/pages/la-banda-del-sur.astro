@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/banda.css";
+---
+
+<BaseLayout titulo="La Banda del Sur">
+  <section class="banda-container">
+    
+    <!-- ENCABEZADO -->
+    <header class="banda-header">
+      
+      <h1 class="banda-title">La Banda del Sur</h1>
+      <p class="banda-subtitle">
+        Backstage, anécdotas y las mejores capturas del finde en pista y boxes. 📸 🔥
+      </p>
+      
+    </header>
+
+    <!-- GRILLA DE TARJETAS -->
+    <div class="banda-grid">
+      
+      <!-- TARJETA IZQUIERDA (LOGO ILUMINADO) -->
+      <div class="banda-card banda-card--logo">
+        <img src="src/images/banda-del-sur.png"
+          alt="La Banda del Sur - Ilustración"
+          class="banda-logo-img"
+        />
+      </div>
+
+      <!-- TARJETA DERECHA (INFO + IG + PILLS) -->
+      <div class="banda-card banda-card--info">
+        <h2 class="banda-info__title">¿Quiénes somos?</h2>
+        
+        <p class="banda-info__text">
+          La comunidad fierrera que acompaña el automovilismo patagónico fecha a fecha. Registramos cada momento de pasión en pista y boxes.
+        </p>
+
+        <!-- CAJA INSTAGRAM -->
+        <div class="banda-ig-box">
+          <p class="banda-ig-box__user">Instagram: @labandadelsur_</p>
+          <a
+            href="https://instagram.com/labandadelsur_"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="banda-ig-btn"
+          >
+            Seguir en IG
+          </a>
+        </div>
+
+        <!-- BADGES INFERIORES -->
+        <ul class="banda-features">
+          <li>Cobertura Zonal</li>
+          <li>Contenido Propio</li>
+          <li>Comunidad del Sur</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </section>
+</BaseLayout>

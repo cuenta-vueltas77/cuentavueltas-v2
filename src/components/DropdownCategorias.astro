@@ -1,0 +1,51 @@
+---
+const categorias = [
+  {
+    nombre: "TC Austral",
+    url: "/categorias/tc-austral",
+    color: "#2E86FF",
+  },
+  {
+    nombre: "TC Patagónico",
+    url: "/categorias/tc-patagonico",
+    color: "#FF8A00",
+  },
+  {
+    nombre: "Monomarca R12",
+    url: "/categorias/r12",
+    color: "#2ECC71",
+  },
+  {
+    nombre: "TP Gol",
+    url: "/categorias/tp-gol",
+    color: "#F1C40F",
+  },
+  {
+    nombre: "TP1100",
+    url: "/categorias/tp1100",
+    color: "#E53935",
+  },
+];
+---
+
+<div class="dropdown">
+  <button class="dropdown-boton" type="button">
+    Categorías
+    <span class="dropdown-flecha">▼</span>
+  </button>
+
+  <div class="dropdown-menu">
+    {
+      categorias.map((categoria) => (
+        <a
+          href={categoria.url}
+          class="dropdown-item"
+          style={`--color-categoria: ${categoria.color}`}
+        >
+          <span class="dropdown-punto"></span>
+          {categoria.nombre}
+        </a>
+      ))
+    }
+  </div>
+</div>

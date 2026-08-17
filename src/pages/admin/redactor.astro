@@ -1,0 +1,180 @@
+---
+export const prerender = false;
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { db, Noticias, eq } from "astro:db";
+
+// Detectamos si venimos en modo edición (ej: /admin/redactor?id=3)
+const idParam = Astro.url.searchParams.get("id");
+let nota = null;
+let modo_edicion = false;
+
+if (idParam && !isNaN(Number(idParam))) {
+  nota = await db.select().from(Noticias).where(eq(Noticias.id, Number(idParam))).get();
+  if (nota) {
+    modo_edicion = true;
+  }
+}
+---
+
+<BaseLayout titulo={modo_edicion ? "✏️ Editar Nota - Centro de Redaccion" : "Redactor - Centro de Mando"}>
+  <div class="contenedor-admin">
+    
+    <!-- ENCABEZADO CENTRO DE MANDO -->
+    <div class="header-mando">
+      <h2>REDACCION DE NOTA</h2>
+      <a href="/" class="btn-cerrar">Cerrar Sesión</a>
+    </div>
+
+    <!-- PANTALLA DE ÉXITO (Oculta hasta guardar) -->
+    <div id="alerta-exito" class="alerta-exito">
+      <div class="alerta-exito__icono">✓</div>
+      <h2 class="alerta-exito__titulo">¡Nota guardada con éxito!</h2>
+      <p class="alerta-exito__texto">La nota ya está registrada en la base de datos de Cuenta Vueltas 77.</p>
+      <div class="alerta-exito__archivo">
+        📄 <span id="exito-id">Registro DB OK</span>
+      </div>
+      <div class="alerta-exito__botones">
+        <a href="/admin" class="btn-exito btn-exito--secundario">← Volver al Centro de Mando</a>
+        <a id="btn-ver-nota" href="/" class="btn-exito btn-exito--primario">Ver nota publicada</a>
+      </div>
+    </div>
+
+    <!-- PANEL DEL FORMULARIO -->
+    <div id="panel-formulario" class="panel-redactor">
+      <div class="header-bar">
+        <a href="/admin" class="btn-volver">← Volver al Menú</a>
+        <h1>{modo_edicion ? "✏️ EDITAR NOTA" : ""}</h1>
+      </div>
+
+      <form id="form-redactor" enctype="multipart/form-data">
+        <input type="hidden" name="id" value={modo_edicion ? nota?.id : ""} />
+        <input type="hidden" name="imagen_actual" value={modo_edicion ? nota?.imagenUrl : ""} />
+
+        <label>Título de la nota:</label>
+        <input type="text" name="titulo" required placeholder="Ej: Victoria contundente en el TP 1100" value={modo_edicion ? nota?.titulo : ""} />
+
+        <label>Bajada / Resumen:</label>
+        <input type="text" name="bajada" required placeholder="Ej: Se disputó la fecha en el sur..." value={modo_edicion ? nota?.bajada : ""} />
+
+        <div class="grilla-dos">
+          <div>
+            <label>Fecha de publicación:</label>
+            <input type="date" name="fecha" required value={modo_edicion && nota?.fecha ? new Date(nota.fecha).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]} />
+          </div>
+          <div>
+            <label>Autor de la nota:</label>
+            <input type="text" name="autor" required value={modo_edicion ? nota?.autor : "Redacción CV77"} />
+          </div>
+        </div>
+
+        <label>Categoría principal:</label>
+        <div class="categorias-box">
+          <label class="cat-label"><input type="radio" name="categorias" value="general" checked={!modo_edicion || nota?.categorias === "general"} /> General</label>
+          <label class="cat-label"><input type="radio" name="categorias" value="tp1100" checked={modo_edicion && nota?.categorias === "tp1100"} /> TP 1100</label>
+          <label class="cat-label"><input type="radio" name="categorias" value="tc-austral" checked={modo_edicion && nota?.categorias === "tc-austral"} /> TC Austral</label>
+          <label class="cat-label"><input type="radio" name="categorias" value="tc-patagonico" checked={modo_edicion && nota?.categorias === "tc-patagonico"} /> TC Patagónico</label>
+          <label class="cat-label"><input type="radio" name="categorias" value="r12" checked={modo_edicion && nota?.categorias === "r12"} /> Monomarca R12</label>
+          <label class="cat-label"><input type="radio" name="categorias" value="tp-gol" checked={modo_edicion && nota?.categorias === "tp-gol"} /> TP Gol</label>
+        </div>
+
+        <label>Tipo de nota:</label>
+        <select name="tipo">
+          <option value="cronica-categoria" selected={modo_edicion && nota?.tipo === "cronica-categoria"}>Carrera / Crónica</option>
+          <option value="entrevista" selected={modo_edicion && nota?.tipo === "entrevista"}>Entrevista</option>
+          <option value="previa" selected={!modo_edicion || (modo_edicion && nota?.tipo === "previa")}>Noticia general / Previa</option>
+        </select>
+
+        <label>Imagen de portada {modo_edicion ? "(Opcional si no querés cambiarla):" : "(Obligatoria):"}</label>
+        {modo_edicion && nota?.imagenUrl && (
+          <span class="info-actual">✓ Imagen actual: <b>{nota.imagenUrl}</b></span>
+        )}
+        <input type="file" name="imagen" accept="image/*" required={!modo_edicion} />
+
+        <label>🎙️ Audio de entrevista o declaración (Opcional):</label>
+        <input type="file" name="audio" accept="audio/*" />
+
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" name="mostrarInicio" value="true" checked={!modo_edicion || nota?.mostrarInicio} /> ¿Mostrar en la página de Inicio?
+          </label>
+        </div>
+
+        <label>Cuerpo de la nota (Texto largo):</label>
+        <textarea name="cuerpo" required placeholder="Escribí acá todo el desarrollo de la nota...">{modo_edicion ? nota?.cuerpo : ""}</textarea>
+
+        <button type="submit" class="btn-publicar">{modo_edicion ? "GUARDAR CAMBIOS" : "PUBLICAR NOTA"}</button>
+      </form>
+    </div>
+
+  </div>
+</BaseLayout>
+
+
+<style>
+  .contenedor-admin { max-width: 900px; margin: 30px auto; padding: 0 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  .header-mando { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 15px 20px; border-radius: 8px; border-bottom: 3px solid #ff1a1a; margin-bottom: 25px; }
+  .header-mando h2 { color: #fff; margin: 0; font-size: 22px; letter-spacing: 1px; }
+  .btn-cerrar { background: #222; color: #aaa; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; border: 1px solid #333; }
+  .btn-cerrar:hover { color: #fff; background: #333; }
+  .panel-redactor { background: #161616; padding: 30px; border-radius: 10px; border: 1px solid #282828; }
+  .header-bar { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; border-bottom: 1px solid #282828; padding-bottom: 15px; }
+  .header-bar h1 { color: #fff; margin: 0; font-size: 24px; text-transform: uppercase; }
+  .btn-volver { background: #222; color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; border: 1px solid #333; }
+  .btn-volver:hover { background: #ff1a1a; border-color: #ff1a1a; }
+  label { display: block; margin-top: 18px; font-weight: bold; color: #ddd; font-size: 14px; }
+  input[type="text"], input[type="date"], select, textarea, input[type="file"] { width: 100%; padding: 11px; margin-top: 6px; background: #0c0c0c; border: 1px solid #333; color: #fff; border-radius: 6px; box-sizing: border-box; }
+  textarea { height: 200px; }
+  .grilla-dos { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .categorias-box { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .cat-label { background: #0c0c0c; border: 1px solid #333; padding: 8px 14px; border-radius: 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px; margin-top: 0; }
+  .cat-label:hover { border-color: #ff1a1a; }
+  .cat-label input[type="radio"] { accent-color: #ff1a1a; cursor: pointer; }
+  .info-actual { color: #00ff66; font-size: 13px; margin-top: 4px; display: block; }
+  .btn-publicar { margin-top: 30px; background: #ff1a1a; color: #fff; border: none; padding: 14px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; letter-spacing: 1px; }
+  .btn-publicar:hover { background: #d11a2a; }
+
+  /* ALERTA DE ÉXITO */
+  .alerta-exito { display: none; background: #161616; border: 1px solid #282828; border-top: 4px solid #2e7d32; border-radius: 10px; padding: 40px 30px; text-align: center; }
+  .alerta-exito__icono { width: 60px; height: 60px; margin: 0 auto 15px; background: rgba(46, 125, 50, 0.15); color: #4caf50; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; }
+  .alerta-exito__titulo { font-size: 26px; color: #fff; margin: 0 0 10px 0; }
+  .alerta-exito__texto { color: #aaa; margin-bottom: 20px; }
+  .alerta-exito__archivo { background: #0c0c0c; border: 1px solid #282828; border-radius: 6px; padding: 12px 18px; display: inline-block; margin-bottom: 25px; font-family: monospace; color: #4caf50; font-weight: bold; }
+  .alerta-exito__botones { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+  .btn-exito { padding: 12px 22px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 14px; }
+  .btn-exito--primario { background: #ff1a1a; color: white; }
+  .btn-exito--secundario { background: #222; color: #ddd; border: 1px solid #333; }
+</style>
+
+<script>
+  const form = document.getElementById("form-redactor") as HTMLFormElement;
+  const panelForm = document.getElementById("panel-formulario");
+  const alertaExito = document.getElementById("alerta-exito");
+  const btnVerNota = document.getElementById("btn-ver-nota") as HTMLAnchorElement;
+  const exitoId = document.getElementById("exito-id");
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("/api/noticias", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        if (panelForm) panelForm.style.display = "none";
+        if (alertaExito) alertaExito.style.display = "block";
+        if (exitoId) exitoId.textContent = `ID en base de datos: #${data.id}`;
+        if (btnVerNota) btnVerNota.href = `/noticias/${data.id}`;
+      } else {
+        alert("Error al guardar: " + (data.error || "Desconocido"));
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Hubo un error de conexión al guardar la nota.");
+    }
+  });
+</script>

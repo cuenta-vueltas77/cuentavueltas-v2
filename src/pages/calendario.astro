@@ -1,0 +1,87 @@
+---
+// src/pages/calendario.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/calendario.css';
+
+const now = new Date();
+
+const rawCarreras = [
+  { fecha: "FECHA 1", autodromo: "Autódromo Mar y Valle", ciudad: "Trelew, Chubut", dias: "13, 14 Y 15", mes: "MAR", month: 2, startDay: 13, endDay: 15 },
+  { fecha: "FECHA 2", autodromo: "Autódromo General San Martín", ciudad: "Comodoro Rivadavia, Chubut", dias: "10, 11 Y 12", mes: "ABR", month: 3, startDay: 10, endDay: 12 },
+  { fecha: "FECHA 3", autodromo: "Autódromo Mar y Valle", ciudad: "Trelew, Chubut", dias: "8, 9 Y 10", mes: "MAY", month: 4, startDay: 8, endDay: 10 },
+  { fecha: "FECHA 4 Y 5", autodromo: "Autódromo General San Martín", ciudad: "Comodoro Rivadavia, Chubut", dias: "12, 13 Y 14", mes: "JUN", month: 5, startDay: 12, endDay: 14 },
+  { fecha: "FECHA 6", autodromo: "Autódromo Mar y Valle", ciudad: "Trelew, Chubut", dias: "7, 8 Y 9", mes: "AGO", month: 7, startDay: 7, endDay: 9 },
+  { fecha: "FECHA 7", autodromo: "Autódromo General San Martín", ciudad: "Comodoro Rivadavia, Chubut", dias: "11, 12 Y 13", mes: "SEP", month: 8, startDay: 11, endDay: 13 },
+  { fecha: "FECHA 8 Y 9", autodromo: "Autódromo Mar y Valle", ciudad: "Trelew, Chubut", dias: "9, 10 Y 11", mes: "OCT", month: 9, startDay: 9, endDay: 11 },
+  { fecha: "FECHA 10", autodromo: "Autódromo General San Martín", ciudad: "Comodoro Rivadavia, Chubut", dias: "6, 7 Y 8", mes: "NOV", month: 10, startDay: 6, endDay: 8 }
+];
+
+// Lógica automática de fechas
+const carreras = rawCarreras.map(c => {
+  // Viernes a las 00:00 hs
+  const startDate = new Date(2026, c.month, c.startDay, 0, 0, 0);
+  // Lunes a las 00:00 hs (marca el fin del fin de semana de carrera)
+  const endDate = new Date(2026, c.month, c.endDay + 1, 0, 0, 0);
+
+  let estado = "CONFIRMADA";
+  let tipo = "futura";
+
+  if (now >= endDate) {
+    estado = "FINALIZADA";
+    tipo = "finalizada";
+  } else if (now >= startDate && now < endDate) {
+    estado = "HOY";
+    tipo = "proxima";
+  }
+
+  return { ...c, startDate, endDate, estado, tipo };
+});
+
+// Detectar y marcar automáticamente la próxima fecha si ninguna está en curso ("HOY")
+const proximaIndex = carreras.findIndex(c => now < c.endDate);
+if (proximaIndex !== -1 && carreras[proximaIndex].estado !== "HOY") {
+  carreras[proximaIndex].estado = "PRÓXIMA FECHA";
+  carreras[proximaIndex].tipo = "proxima";
+}
+---
+
+<BaseLayout title="Calendario 2026 | Cuenta Vueltas 77">
+  <div class="cv-calendario-page">
+    <div class="cv-container">
+      
+      <!-- ENCABEZADO -->
+      <div class="cv-header">
+        <h1>CALENDARIO <span>2026</span></h1>
+        <p>TEMPORADA OFICIAL • AUTOMOVILISMO ZONAL</p>
+      </div>
+
+      <!-- LISTA DE FILAS -->
+      <div class="cv-list">
+        {carreras.map((c) => (
+          <div class={`cv-row ${c.tipo}`}>
+            
+            <!-- FECHA -->
+            <div class="cv-date">
+              <span class="cv-month">{c.mes}</span>
+              <span class="cv-days">{c.dias}</span>
+            </div>
+
+            <!-- INFO -->
+            <div class="cv-info">
+              <span class="cv-round">{c.fecha}</span>
+              <h3>{c.autodromo}</h3>
+              <p>{c.ciudad}</p>
+            </div>
+
+            <!-- ESTADO -->
+            <div class="cv-status">
+              <span class={`cv-badge ${c.tipo}`}>{c.estado}</span>
+            </div>
+
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</BaseLayout>

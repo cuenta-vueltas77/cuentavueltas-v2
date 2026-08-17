@@ -1,0 +1,191 @@
+/* ==========================================
+   LA BANDA DEL SUR - V2 MEJORADA
+========================================== */
+.banda-container {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+/* --- ENCABEZADO --- */
+.banda-header {
+  /* 1. Sacamos el fondo negro puro y el recuadro cerrado */
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+
+  /* 2. Acomodamos el centrado y el aire vertical */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0 2rem 0;
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid rgba(225, 6, 0, 0.45);
+}
+
+
+
+/* Etiqueta superior deportiva */
+.banda-badge {
+  background: rgba(225, 6, 0, 0.15);
+  color: #e10600;
+  border: 1px solid rgba(225, 6, 0, 0.4);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+}
+
+.banda-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 0.8rem 0;
+  letter-spacing: 1px;
+}
+
+.banda-subtitle {
+  font-size: 1.15rem;
+  color: #bbb;
+  margin: 0 0 1.8rem 0;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+
+
+/* --- GRILLA PRINCIPAL --- */
+.banda-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2.5rem;
+  align-items: stretch;
+}
+
+/* --- TARJETAS GENERALES --- */
+.banda-card {
+  background-color: #000000;
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+/* Tarjeta izquierda: con brillo radial detrás de la ilustración */
+.banda-card--logo {
+  border: 1px solid rgba(225, 6, 0, 0.5);
+  background: radial-gradient(circle at center, rgba(225, 6, 0, 0.12) 0%, #111 70%);
+  box-shadow: 0 0 35px rgba(225, 6, 0, 0.12);
+}
+
+.banda-card--logo:hover {
+  transform: translateY(-4px);
+  border-color: #e10600;
+  box-shadow: 0 0 45px rgba(225, 6, 0, 0.22);
+}
+
+.banda-logo-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 1000px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 15px rgb(0, 0, 0));
+}
+
+/* Tarjeta derecha: diseño moderno y limpio */
+.banda-card--info {
+  border: 1px solid #222;
+  background: linear-gradient(145deg, #141414 0%, #0d0d0d 100%);
+}
+
+.banda-info__title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.5px;
+}
+
+.banda-info__text {
+  font-size: 1rem;
+  color: #aaa;
+  line-height: 1.7;
+  margin: 0 0 2.5rem 0;
+  max-width: 400px;
+}
+
+/* --- CAJA DE INSTAGRAM MEJORADA --- */
+.banda-ig-box {
+  width: 100%;
+  max-width: 400px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.banda-ig-box__user {
+  color: #eee;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.banda-ig-btn {
+  background-color: #e10600;
+  color: #fff;
+  padding: 0.55rem 1.3rem;
+  border-radius: 20px;
+  text-decoration: none;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.banda-ig-btn:hover {
+  background-color: #ff1a1a;
+  transform: scale(1.03);
+}
+
+/* --- BADGES/PILLS INFERIORES --- */
+.banda-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.banda-features li {
+  background-color: #1f1f1f;
+  color: #ccc;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #2a2a2a;
+}

@@ -1,0 +1,40 @@
+---
+// Recibimos los datos de la nota (y si no hay nota, usamos textos por defecto de CV77)
+const {
+  titulo = "Cuenta Vueltas 77 | Automovilismo Zonal",
+  bajada = "Todas las novedades del automovilismo zonal del sur",
+  imagen = "/favicon.svg",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Título dinámico en la pestaña del navegador -->
+    <title>{titulo}</title>
+
+    <!-- Etiquetas Open Graph para que WhatsApp, Facebook y X muestren la tarjeta -->
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={bajada} />
+    <meta property="og:image" content={new URL(imagen, Astro.site || "https://cuentavueltas77.com")} />
+    <meta property="og:type" content="article" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>

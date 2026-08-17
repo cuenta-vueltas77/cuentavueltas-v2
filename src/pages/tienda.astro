@@ -1,0 +1,279 @@
+---
+// src/pages/tienda.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// 👇 TUS DATOS GUARDADOS PARA CUANDO ABRAN LA TIENDA DE VERDAD 👇
+const numeroWhatsApp = "5492974768868"; // <-- TU NÚMERO
+
+const productos = [
+  {
+    id: 1,
+    nombre: "Buzo Oficial Cuenta Vueltas 77",
+    precio: 70000,
+    imagen: "src/images/buzocv77.png",
+    descripcion: "Buzo de alta calidad overzide.",
+  },
+  {
+    id: 2,
+    nombre: "Remera Oficial TC Zonal",
+    precio: 25000,
+    imagen: "/imagenes/logo/logoCV77.png",
+    descripcion: "Algodón peinado 100%. Estampa frontal y en espalda.",
+  },
+  {
+    id: 3,
+    nombre: "Vaso de aluminio Cuenta Vueltas 77",
+    precio: 5000,
+    imagen: "/imagenes/logo/logoCV77.png",
+    descripcion: "",
+  },
+];
+---
+
+<BaseLayout titulo="Tienda Oficial | Cuenta Vueltas 77">
+  <main class="tienda-contenedor">
+    
+    <div class="tienda-encabezado">
+      <h1>Tienda Oficial</h1>
+      <p>Estamos preparando todo para traerte la mejor indumentaria oficial de Cuenta Vueltas 77.</p>
+    </div>
+
+    <!-- CARTEL DE PRÓXIMAMENTE -->
+    <div class="cartel-proximamente">
+      <svg class="icono-construccion" viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+      </svg>
+      
+      <h2>CALENTANDO MOTORES</h2>
+      <p>Nuestra tienda online va a estar disponible muy pronto.</p>
+      <span class="sub-proximamente">Seguinos en redes para enterarte antes que nadie.</span>
+      
+      <a href="/" class="btn-volver">← Volver al inicio</a>
+    </div>
+
+    <!-- 
+      CUANDO QUIERAS ABRIR LA TIENDA: 
+      Borrá el cartel de arriba y borrá las flechas (<!-- y -- >) que envuelven a esta grilla.
+    -->
+    
+    <!-- 
+    <div class="productos-grilla">
+      {productos.map((prod) => {
+        const mensajeWsp = `¡Hola! Quiero comprar este producto de la tienda:\n\n📦 *${prod.nombre}*\n💰 Precio: $${prod.precio.toLocaleString("es-AR")}\n\n¿Cómo seguimos para la transferencia?`;
+        const linkWsp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensajeWsp)}`;
+
+        return (
+          <div class="producto-card">
+            <div class="producto-imagen">
+              <img src={prod.imagen} alt={prod.nombre} loading="lazy" />
+            </div>
+            <div class="producto-info">
+              <h3>{prod.nombre}</h3>
+              <p class="producto-desc">{prod.descripcion}</p>
+              <div class="producto-footer">
+                <span class="producto-precio">${prod.precio.toLocaleString("es-AR")}</span>
+                <a href={linkWsp} target="_blank" rel="noopener noreferrer" class="btn-comprar">
+                  Comprar por WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div> 
+    -->
+
+  </main>
+</BaseLayout>
+
+<style>
+  .tienda-contenedor {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem 1.5rem;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    background: transparent;
+  }
+
+  .tienda-encabezado {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .tienda-encabezado h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    letter-spacing: 1px;
+  }
+
+  .tienda-encabezado p {
+    color: #a0a0a0;
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  /* CARTEL PRÓXIMAMENTE */
+  .cartel-proximamente {
+    background-color: #121212;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 60px 20px;
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .icono-construccion {
+    color: #e50914; 
+    margin-bottom: 20px;
+    animation: flotar 3s ease-in-out infinite;
+  }
+
+  .cartel-proximamente h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.2rem;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .cartel-proximamente p {
+    font-size: 1.1rem;
+    color: #cccccc;
+    margin-bottom: 5px;
+  }
+
+  .sub-proximamente {
+    display: block;
+    font-size: 0.9rem;
+    color: #777777;
+    margin-bottom: 30px;
+  }
+
+  .btn-volver {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: transparent;
+    color: #ffffff;
+    border: 1px solid #444444;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+
+  .btn-volver:hover {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  @keyframes flotar {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+  }
+
+  /* ESTILOS DE LA TIENDA OCULTA */
+  .productos-grilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .producto-card {
+    background-color: #121212;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .producto-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .producto-imagen {
+    width: 100%;
+    height: 260px;
+    background-color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0.5rem;
+  }
+
+  .producto-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .producto-card:hover .producto-imagen img {
+    transform: scale(1.05);
+  }
+
+  .producto-info {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .producto-info h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.4rem;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+  }
+
+  .producto-desc {
+    color: #a0a0a0;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    flex: 1;
+  }
+
+  .producto-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 1rem;
+  }
+
+  .producto-precio {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #faf8f8;
+  }
+
+  .btn-comprar {
+    background-color: #25d366;
+    color: #ffffff;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .btn-comprar:hover {
+    opacity: 0.9;
+  }
+</style>

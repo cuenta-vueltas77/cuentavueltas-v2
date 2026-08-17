@@ -1,0 +1,258 @@
+/* ==========================================
+   HEADER PRINCIPAL
+========================================== */
+header {
+  background: #000;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+header .contenedor {
+  max-width: 1400px;
+  margin: auto;
+  padding: 22px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo img {
+  display: block;
+  width: 210px;
+  height: auto;
+}
+
+/* ==========================================
+   NAVEGACIÓN & ENLACES
+========================================== */
+nav {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+  transition: 0.25s;
+}
+
+/* Línea roja animada al pasar el mouse por los enlaces */
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 0;
+  height: 2px;
+  background: var(--color-rojo);
+  transition: 0.25s;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+/* ==========================================
+   MENÚ DESPLEGABLE (CATEGORÍAS)
+========================================== */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-boton {
+  background: none;
+  border: none;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.dropdown-boton::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 0;
+  height: 3px;
+  background: red;
+  transition: width 0.3s ease;
+}
+
+.dropdown-boton:hover::after {
+  width: 100%;
+}
+
+.dropdown-flecha {
+  font-size: 0.7rem;
+  transition: transform 0.25s ease;
+}
+
+.dropdown:hover .dropdown-flecha {
+  transform: rotate(180deg);
+}
+
+/* Caja del submenú flotante */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  min-width: 220px;
+  padding: 12px;
+  background: #0b0b0b;
+  border: 1px solid #2b2b2b;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+  z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Ítems dentro del menú desplegable */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  color: white;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 6px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+/* Evita que se subrayen de rojo por dentro del menú */
+.dropdown-item::after {
+  display: none !important;
+}
+
+.dropdown-item:hover {
+  background: #181818;
+  color: var(--color-categoria);
+}
+
+/* El puntito mágico de color */
+.dropdown-punto {
+  width: 9px;
+  height: 9px;
+  background: var(--color-categoria);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+/* --- Evita que el último menú desplegable se salga por la derecha --- */
+.dropdown-derecha .dropdown-menu {
+  left: auto;
+  right: 0;
+}
+/* ==========================================
+   ADAPTACIÓN MÓVIL DEFINITIVA (CELULARES Y TABLETS)
+   -> Pegar abajo de todo tu CSS del Header
+========================================== */
+@media (max-width: 768px) {
+  /* 1. Apilamos logo arriba y menú abajo */
+  header .contenedor {
+    flex-direction: column;
+    padding: 15px 12px;
+    gap: 14px;
+  }
+
+  /* 2. Ajustamos el logo */
+  .logo img {
+    width: 175px;
+  }
+
+  /* 3. Enlaces centrados */
+  nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 18px;
+    width: 100%;
+  }
+
+  /* 4. Fuente adaptada */
+  nav a,
+  .dropdown-boton {
+    font-size: 0.95rem;
+  }
+
+  /* 5. Posicionamiento móvil del menú */
+  .dropdown-menu {
+    min-width: 200px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(-8px);
+  }
+
+  .dropdown-derecha .dropdown-menu {
+    left: 50%;
+    right: auto;
+  }
+
+  /* ----------------------------------------------------
+     CONTROL TÁCTIL Y DE ESTADOS PARA CELULARES
+     ---------------------------------------------------- */
+  
+  /* Desactivamos el hover tradicional de PC en pantallas táctiles */
+  .dropdown:hover .dropdown-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(-8px);
+  }
+
+  /* Se abre solo cuando JS le asigna la clase .activo */
+  .dropdown.activo .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  /* Girar la flechita únicamente cuando está activo */
+  .dropdown.activo .dropdown-flecha {
+    transform: rotate(180deg);
+  }
+
+  /* ANULAMOS EL FOCO TRABADO DEL NAVEGADOR MÓVIL */
+  .dropdown-boton:focus,
+  .dropdown-boton:active {
+    outline: none !important;
+    background-color: transparent !important;
+  }
+
+  /* FORZAMOS A QUE LA LÍNEA ROJA Y EL ESTILO SE BORREN AL CERRARSE */
+  .dropdown:not(.activo) .dropdown-boton {
+    border-bottom-color: transparent !important;
+  }
+
+  /* LA LÍNEA ROJA SOLO VIVE SI EL MENÚ ESTÁ ABIERTO (.activo) */
+  .dropdown.activo .dropdown-boton {
+    border-bottom-color: var(--color-activo, #e10600) !important;
+  }
+}

@@ -1,0 +1,204 @@
+---
+// src/pages/tienda.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// Número de WhatsApp al que llega el pedido (cambialo por el tuyo con código de país y área, sin +)
+const numeroWhatsApp = "5492974768868"; // <-- PONÉ TU NÚMERO ACÁ
+
+// Productos de ejemplo (podés sumar los tuyos o editarlos fácilmente)
+const productos = [
+  {
+    id: 1,
+    nombre: "Buzo Oficial Cuenta Vueltas 77",
+    precio: 70000,
+    imagen: "src/images/buzocv77.png",
+    descripcion: "Buzo de alta calidad overzide.",
+  },
+  {
+    id: 2,
+    nombre: "Remera Oficial TC Zonal",
+    precio: 25000,
+    imagen: "/imagenes/logo/logoCV77.png",
+    descripcion: "Algodón peinado 100%. Estampa frontal y en espalda.",
+  },
+  {
+    id: 3,
+    nombre: "Vaso de aluminio Cuenta Vueltas 77",
+    precio: 5000,
+    imagen: "/imagenes/logo/logoCV77.png",
+    descripcion: "",
+  },
+];
+---
+
+<BaseLayout titulo="Tienda Oficial">
+  <main class="tienda-contenedor">
+    <!-- Usamos un div limpio para que no herede el fondo negro del <header> del menú -->
+    <div class="tienda-encabezado">
+      <h1>Tienda Oficial</h1>
+      <p>Elegí tu producto, hacé tu pedido y coordinamos el pago por transferencia.</p>
+    </div>
+
+    <div class="productos-grilla">
+      {productos.map((prod) => {
+        const mensajeWsp = `¡Hola! Quiero comprar este producto de la tienda:\n\n📦 *${prod.nombre}*\n💰 Precio: $${prod.precio.toLocaleString("es-AR")}\n\n¿Cómo seguimos para la transferencia?`;
+        const linkWsp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensajeWsp)}`;
+
+        return (
+          <div class="producto-card">
+            <div class="producto-imagen">
+              <img src={prod.imagen} alt={prod.nombre} loading="lazy" />
+            </div>
+            <div class="producto-info">
+              <h3>{prod.nombre}</h3>
+              <p class="producto-desc">{prod.descripcion}</p>
+              <div class="producto-footer">
+                <span class="producto-precio">${prod.precio.toLocaleString("es-AR")}</span>
+                <a
+                  href={linkWsp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-comprar"
+                >
+                  Comprar por WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .tienda-contenedor {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem 1.5rem;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    background: transparent; /* Asegura que mantenga un solo color de fondo */
+  }
+
+  /* --- ENCABEZADO SIN CAJAS NI BORDES --- */
+  .tienda-encabezado {
+    text-align: center;
+    margin-bottom: 3rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .tienda-encabezado h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    letter-spacing: 1px;
+  }
+
+  .tienda-encabezado p {
+    color: #a0a0a0;
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .productos-grilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .producto-card {
+    background-color: #121212;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .producto-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .producto-imagen {
+    width: 100%;
+    height: 260px;
+    background-color: #1a1a1a; /* Fondo oscuro por si una foto es más ancha que alta */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0.5rem; /* Le da un aire mínimo para que nada toque el borde */
+  }
+
+  .producto-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* ¡CLAVE! Muestra la imagen ENTERA sin recortar nada */
+    transition: transform 0.3s ease;
+  }
+
+  .producto-card:hover .producto-imagen img {
+    transform: scale(1.05);
+  
+  }
+
+  .producto-info {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .producto-info h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.4rem;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+  }
+
+  .producto-desc {
+    color: #a0a0a0;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    flex: 1;
+  }
+
+  .producto-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 1rem;
+  }
+
+  .producto-precio {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #faf8f8;
+  }
+
+  .btn-comprar {
+    background-color: #25d366;
+    color: #ffffff;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .btn-comprar:hover {
+    opacity: 0.9;
+  }
+</style>
