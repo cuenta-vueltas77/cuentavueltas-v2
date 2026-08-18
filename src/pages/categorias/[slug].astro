@@ -1,10 +1,20 @@
 ---
-export const prerender = false; // 1. OBLIGATORIO: Lee de Astro DB en vivo
-
 import { getCollection } from "astro:content";
 import { db, Noticias } from "astro:db";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import NewsCard from "../../components/NewsCard.astro";
+
+// 1. OBLIGATORIO PARA PÁGINAS ESTÁTICAS:
+// Le pasamos a Astro la lista exacta de tus categorías para que pueda fabricar el HTML
+export function getStaticPaths() {
+  return [
+    { params: { slug: "tc-austral" } },
+    { params: { slug: "tc-patagonico" } },
+    { params: { slug: "r12" } },
+    { params: { slug: "tp-gol" } },
+    { params: { slug: "tp1100" } },
+  ];
+}
 
 // 2. Tomamos el slug de la URL (ej: "tp1100", "r12")
 const { slug } = Astro.params;
@@ -41,7 +51,8 @@ const categoria = listaCategorias.find((c) => c.slug === slug) || {
 
 // 4. Traemos las notas nuevas de Astro DB y las viejas de Markdown
 const notasDB = await db.select().from(Noticias).all();
-const notasMD = await getCollection("noticias");
+// Agregamos un salvavidas (.catch) por si la carpeta de noticias llega a estar vacía
+const notasMD = await getCollection("noticias").catch(() => []);
 
 // 5. UNIFICACIÓN HÍBRIDA: Armamos una sola lista
 const todasLasNotas = [
