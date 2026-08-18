@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "ASTRO_DB_REMOTE_URL=libsql://cuentavueltas-db-cuenta-vueltas77.aws-us-east-1.turso.io ASTRO_DB_APP_TOKEN=PEGAR_TOKEN_ACA astro db push --remote && ASTRO_DB_REMOTE_URL=libsql://cuentavueltas-db-cuenta-vueltas77.aws-us-east-1.turso.io ASTRO_DB_APP_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODcwMDMxNzQsImlkIjoiMDFhMDExYjAtNDgwMS03NmUxLTg1MTMtYTIyN2ZiMDkxZmFjIiwia2lkIjoieXEtcUc5UWRid09wazZ5M1d4X3I3bmxQV3NvQ1VHaUE1NGlsTnJoWHJocyIsInJpZCI6Ijc5OWNmNDg2LWQwZDYtNDY3OS1iNzc3LTE5MmRkYzhiY2M4ZCJ9.nnSWPPOIq87mceeNYKB3I7rWlnqWTdVc9Cq84wrH5xX1NL4EzWEqauxkunqZj1PIw5ubWvIhsbtonUCiJOEfDw astro build --remote"
+    "build": "astro db push --remote && astro build --remote"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
