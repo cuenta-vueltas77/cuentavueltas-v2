@@ -15,7 +15,8 @@ const noticias = defineCollection({
     categorias: z.array(z.string()),
     tipo: z.string(),
     imagen: z.string(),
-    galeria: z.array(z.string()).optional().default([]), // <-- Galería de fotos agregada
+    audio: z.string().optional(), // 
+    galeria: z.any().optional(), // 
     destacada: z.boolean().default(false),
     mostrarEnInicio: z.boolean().default(true),
   }),
