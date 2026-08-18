@@ -1,4 +1,6 @@
 ---
+
+import fotoBanda from '../images/banda-del-sur.png';
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/banda.css";
 ---
@@ -19,13 +21,14 @@ import "../styles/banda.css";
     <!-- GRILLA DE TARJETAS -->
     <div class="banda-grid">
       
-      <!-- TARJETA IZQUIERDA (LOGO ILUMINADO) -->
-      <div class="banda-card banda-card--logo">
-        <img src="src/images/banda-del-sur.png"
-          alt="La Banda del Sur - Ilustración"
-          class="banda-logo-img"
-        />
-      </div>
+<!-- TARJETA IZQUIERDA (LOGO ILUMINADO) -->
+<div class="banda-card banda-card--logo">
+  <img 
+    src={fotoBanda.src} 
+    alt="La Banda del Sur - Ilustración" 
+    class="banda-logo-img" 
+  />
+</div>
 
       <!-- TARJETA DERECHA (INFO + IG + PILLS) -->
       <div class="banda-card banda-card--info">
