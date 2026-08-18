@@ -15,7 +15,10 @@ collections:
     fields:
       - { label: "Título", name: "titulo", widget: "string" }
       - { label: "Bajada / Resumen", name: "bajada", widget: "text" }
-      - { label: "Fecha", name: "fecha", widget: "date", format: "YYYY-MM-DD" }
+      
+      # 👇 ACÁ ESTÁ EL CAMBIO PARA SVELTIA (datetime sin horas) 👇
+      - { label: "Fecha", name: "fecha", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      
       - { label: "Autor", name: "autor", widget: "string", default: "Redacción CV77" }
       - { label: "Categorías", name: "categorias", widget: "select", multiple: true, options: ["Automovilismo", "TC Austral", "TP 1100", "R12", "TP Gol", "General"], default: ["Automovilismo"] }
       - { label: "Tipo", name: "tipo", widget: "string", default: "Noticia" }
