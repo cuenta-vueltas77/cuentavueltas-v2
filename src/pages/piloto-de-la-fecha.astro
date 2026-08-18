@@ -2,10 +2,16 @@
 // src/pages/piloto-de-la-fecha.astro
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-
-// 👇 ACÁ EDITÁS LOS CANDIDATOS DE CADA FECHA SÚPER RÁPIDO
-const categorias = await db.select().from(Categorias);
-
+// 👇 CONGELADO TEMPORALMENTE: Lista vacía para pasar el filtro de Vercel. 
+// En la Fase 2 lo conectamos a Turso.
+const categorias = [
+  {
+    id: 1,
+    siglas: "CV77",
+    nombre: "Votaciones Próximamente",
+    candidatos: ["Estamos instalando el nuevo sistema de votos"],
+  }
+];
 ---
 
 <BaseLayout titulo="Piloto de la Fecha">
@@ -89,7 +95,6 @@ const categorias = await db.select().from(Categorias);
   const inputOtroNombre = document.getElementById('input-otro-nombre') as HTMLInputElement;
   const formVoto = document.getElementById('form-voto') as HTMLFormElement;
 
-  // Abrir modal al hacer clic en "Votar"
   botonesVotar.forEach((btn) => {
     btn.addEventListener('click', () => {
       const nombreCat = btn.getAttribute('data-nombre');
@@ -99,9 +104,8 @@ const categorias = await db.select().from(Categorias);
       if (modalTitulo) modalTitulo.textContent = `Votar: ${nombreCat}`;
       if (inputCategoria) inputCategoria.value = idCat || '';
 
-      // Generar radios de candidatos
       if (listaCandidatos) {
-        listaCandidatos.innerHTML = candidatos.map((candidato: string, idx: number) => `
+        listaCandidatos.innerHTML = candidatos.map((candidato: string) => `
           <label class="opcion-radio">
             <input type="radio" name="piloto" value="${candidato}" required />
             <span>${candidato}</span>
@@ -109,19 +113,16 @@ const categorias = await db.select().from(Categorias);
         `).join('');
       }
 
-      // Resetear campo "Otro"
       if (inputOtroNombre) {
         inputOtroNombre.value = '';
         inputOtroNombre.disabled = true;
       }
       if (radioOtro) radioOtro.checked = false;
 
-      // Mostrar modal
       modal?.classList.remove('oculto');
     });
   });
 
-  // Habilitar/deshabilitar input de "Otro"
   document.addEventListener('change', (e) => {
     const target = e.target as HTMLInputElement;
     if (target.name === 'piloto') {
@@ -135,282 +136,47 @@ const categorias = await db.select().from(Categorias);
     }
   });
 
-  // Cerrar modal
   btnCerrar?.addEventListener('click', () => {
     modal?.classList.add('oculto');
   });
 
-  // Envío real del formulario a la base de datos
   formVoto?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const formData = new FormData(formVoto);
-    let pilotoVotado = formData.get('piloto') as string;
-    
-    if (pilotoVotado === 'OTRO') {
-      pilotoVotado = inputOtroNombre.value.trim() || 'Otro piloto no especificado';
-    }
-
-    const categoria = formData.get('categoria') as string;
-
-    try {
-      // Enviamos el voto a la API que creamos en el Paso 2
-      const res = await fetch('/api/votar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ categoria, piloto: pilotoVotado })
-      });
-
-      if (res.ok) {
-        alert(`¡Listo! Tu voto para ${pilotoVotado} fue guardado con éxito.`);
-        modal?.classList.add('oculto');
-        formVoto.reset();
-      } else {
-        alert('Hubo un problema al guardar el voto. Intentá de nuevo.');
-      }
-    } catch (error) {
-      alert('Error de conexión al votar.');
-    }
+    alert("Votación pausada temporalmente. ¡Volvé en unos minutos!");
+    modal?.classList.add('oculto');
+    formVoto.reset();
   });
 </script>
 
 <style>
-  .piloto-contenedor {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem 1.5rem;
-    color: #ffffff;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .piloto-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-  .piloto-header h1 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 2.8rem;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-    letter-spacing: 1px;
-  }
-
-  .piloto-header p {
-    color: #a0a0a0;
-    font-size: 1.1rem;
-    margin: 0;
-  }
-
-  .categorias-grilla {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-  }
-
-  .categoria-card {
-    background-color: #121212;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-  }
-
-  .categoria-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
-  /* GRAFICO TIPO CASCO / BANNER */
-  .casco-contenedor {
-    height: 180px;
-    background: linear-gradient(145deg, #1f1f1f, #111111);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    position: relative;
-  }
-
-  .casco-grafico {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: #1a1a1a;
-    border: 2px solid #e10600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 20px rgba(225, 6, 0, 0.2);
-  }
-
-  .siglas-cat {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 2rem;
-    font-weight: 800;
-    color: #ffffff;
-    letter-spacing: 2px;
-  }
-
-  .categoria-info {
-    padding: 1.5rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-
-  .categoria-info h3 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1.6rem;
-    margin: 0 0 0.2rem 0;
-    text-transform: uppercase;
-  }
-
-  .subtitulo {
-    color: #a0a0a0;
-    font-size: 0.85rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .btn-votar {
-    background-color: #e10600;
-    color: #ffffff;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 6px;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-  }
-
-  .btn-votar:hover {
-    background-color: #ff1810;
-  }
-
-  /* --- MODAL DE VOTACIÓN --- */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(5px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 1rem;
-  }
-
-  .modal-overlay.oculto {
-    display: none;
-  }
-
-  .modal-caja {
-    background: #181818;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    width: 100%;
-    max-width: 480px;
-    padding: 2rem;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  }
-
-  .modal-cerrar {
-    position: absolute;
-    top: 1rem;
-    right: 1.2rem;
-    background: transparent;
-    border: none;
-    color: #a0a0a0;
-    font-size: 1.2rem;
-    cursor: pointer;
-  }
-
-  .modal-caja h2 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1.8rem;
-    margin: 0 0 0.3rem 0;
-    text-transform: uppercase;
-  }
-
-  .modal-bajada {
-    color: #a0a0a0;
-    font-size: 0.95rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .candidatos-opciones {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
-  }
-
-  .opcion-radio {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    background: #222222;
-    padding: 0.8rem 1rem;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    cursor: pointer;
-    transition: border-color 0.2s ease, background 0.2s ease;
-  }
-
-  .opcion-radio:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    background: #282828;
-  }
-
-  .opcion-radio input[type="radio"] {
-    accent-color: #e10600;
-    width: 18px;
-    height: 18px;
-  }
-
-  .otro-label {
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .otro-label input[type="text"] {
-    flex: 1;
-    background: #121212;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-  }
-
-  .otro-label input[type="text"]:disabled {
-    opacity: 0.4;
-  }
-
-  .btn-enviar-voto {
-    width: 100%;
-    background: #e10600;
-    color: #fff;
-    border: none;
-    padding: 0.9rem;
-    border-radius: 6px;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-
-  .btn-enviar-voto:hover {
-    background: #ff1810;
-  }
+  .piloto-contenedor { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem 1.5rem; color: #ffffff; font-family: 'Inter', sans-serif; }
+  .piloto-header { text-align: center; margin-bottom: 3rem; }
+  .piloto-header h1 { font-family: 'Rajdhani', sans-serif; font-size: 2.8rem; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 1px; }
+  .piloto-header p { color: #a0a0a0; font-size: 1.1rem; margin: 0; }
+  .categorias-grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
+  .categoria-card { background-color: #121212; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, border-color 0.2s ease; }
+  .categoria-card:hover { transform: translateY(-4px); border-color: rgba(255, 255, 255, 0.3); }
+  .casco-contenedor { height: 180px; background: linear-gradient(145deg, #1f1f1f, #111111); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); position: relative; }
+  .casco-grafico { width: 120px; height: 120px; border-radius: 50%; background: #1a1a1a; border: 2px solid #e10600; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(225, 6, 0, 0.2); }
+  .siglas-cat { font-family: 'Rajdhani', sans-serif; font-size: 2rem; font-weight: 800; color: #ffffff; letter-spacing: 2px; }
+  .categoria-info { padding: 1.5rem; text-align: center; display: flex; flex-direction: column; flex: 1; }
+  .categoria-info h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; margin: 0 0 0.2rem 0; text-transform: uppercase; }
+  .subtitulo { color: #a0a0a0; font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .btn-votar { background-color: #e10600; color: #ffffff; border: none; padding: 0.8rem 1.5rem; border-radius: 6px; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: background-color 0.2s ease, transform 0.1s ease; }
+  .btn-votar:hover { background-color: #ff1810; }
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
+  .modal-overlay.oculto { display: none; }
+  .modal-caja { background: #181818; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; width: 100%; max-width: 480px; padding: 2rem; position: relative; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+  .modal-cerrar { position: absolute; top: 1rem; right: 1.2rem; background: transparent; border: none; color: #a0a0a0; font-size: 1.2rem; cursor: pointer; }
+  .modal-caja h2 { font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; margin: 0 0 0.3rem 0; text-transform: uppercase; }
+  .modal-bajada { color: #a0a0a0; font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .candidatos-opciones { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1rem; }
+  .opcion-radio { display: flex; align-items: center; gap: 0.8rem; background: #222222; padding: 0.8rem 1rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease; }
+  .opcion-radio:hover { border-color: rgba(255, 255, 255, 0.3); background: #282828; }
+  .opcion-radio input[type="radio"] { accent-color: #e10600; width: 18px; height: 18px; }
+  .otro-label { margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .otro-label input[type="text"] { flex: 1; background: #121212; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.9rem; }
+  .otro-label input[type="text"]:disabled { opacity: 0.4; }
+  .btn-enviar-voto { width: 100%; background: #e10600; color: #fff; border: none; padding: 0.9rem; border-radius: 6px; font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; cursor: pointer; }
+  .btn-enviar-voto:hover { background: #ff1810; }
 </style>
