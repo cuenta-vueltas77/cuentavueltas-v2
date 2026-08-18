@@ -1,11 +1,9 @@
 ---
 import { getCollection } from "astro:content";
-import { db, Noticias } from "astro:db";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import NewsCard from "../../components/NewsCard.astro";
 
-// 1. OBLIGATORIO PARA PÁGINAS ESTÁTICAS:
-// Le pasamos a Astro la lista exacta de tus categorías para que pueda fabricar el HTML
+// 1. OBLIGATORIO PARA PÁGINAS ESTÁTICAS (Agregué las nuevas del CMS por las dudas)
 export function getStaticPaths() {
   return [
     { params: { slug: "tc-austral" } },
@@ -13,92 +11,61 @@ export function getStaticPaths() {
     { params: { slug: "r12" } },
     { params: { slug: "tp-gol" } },
     { params: { slug: "tp1100" } },
+    { params: { slug: "automovilismo" } },
+    { params: { slug: "general" } },
   ];
 }
 
-// 2. Tomamos el slug de la URL (ej: "tp1100", "r12")
 const { slug } = Astro.params;
 
-// 3. Mapeo de categorías para mantener tus nombres oficiales intactos
+// 2. Mapeo de categorías para mantener tus nombres oficiales
 const listaCategorias = [
-  {
-    slug: "tc-austral",
-    nombre: "TC Austral",
-  },
-  {
-    slug: "tc-patagonico",
-    nombre: "TC Patagónico",
-  },
-  {
-    slug: "r12",
-    nombre: "Monomarca R12",
-  },
-  {
-    slug: "tp-gol",
-    nombre: "TP Gol",
-  },
-  {
-    slug: "tp1100",
-    nombre: "TP 1100",
-  },
+  { slug: "tc-austral", nombre: "TC Austral" },
+  { slug: "tc-patagonico", nombre: "TC Patagónico" },
+  { slug: "r12", nombre: "Monomarca R12" },
+  { slug: "tp-gol", nombre: "TP Gol" },
+  { slug: "tp1100", nombre: "TP 1100" },
+  { slug: "automovilismo", nombre: "Automovilismo" },
+  { slug: "general", nombre: "General" },
 ];
 
-// Buscamos la categoría actual en la lista (o creamos un fallback por si acaso)
 const categoria = listaCategorias.find((c) => c.slug === slug) || {
   slug: String(slug),
   nombre: String(slug).toUpperCase(),
 };
 
-// 4. Traemos las notas nuevas de Astro DB y las viejas de Markdown
-const notasDB = await db.select().from(Noticias).all();
-// Agregamos un salvavidas (.catch) por si la carpeta de noticias llega a estar vacía
+// 3. Solo traemos las notas de Markdown (Decap CMS)
 const notasMD = await getCollection("noticias").catch(() => []);
 
-// 5. UNIFICACIÓN HÍBRIDA: Armamos una sola lista
-const todasLasNotas = [
-  // A) Notas de Astro DB
-  ...notasDB.map((nota) => ({
-    id: String(nota.id),
-    data: {
-      titulo: nota.titulo,
-      imagen: nota.imagenUrl,
-      categorias: Array.isArray(nota.categorias)
-        ? nota.categorias
-        : [nota.categorias || "general"],
-      tipo: nota.tipo || "nota",
-      fecha: (nota.fecha && !isNaN(new Date(nota.fecha).getTime())) 
-  ? new Date(nota.fecha) 
-  : new Date(),
-    },
-  })),
-  // B) Notas de Markdown viejo
-  ...notasMD.map((nota) => ({
-    id: nota.id || nota.slug,
-    data: {
-      titulo: nota.data.titulo,
-      imagen: nota.data.imagen,
-      categorias: Array.isArray(nota.data.categorias)
-        ? nota.data.categorias
-        : [nota.data.categorias || "general"],
-      tipo: nota.data.tipo || "nota",
-      fecha: (nota.fecha && !isNaN(new Date(nota.fecha).getTime())) 
-  ? new Date(nota.fecha) 
-  : new Date(),
-    },
-  })),
-];
+// 4. Armamos la lista
+const todasLasNotas = notasMD.map((nota) => ({
+  id: nota.id || nota.slug,
+  data: {
+    titulo: nota.data.titulo,
+    imagen: nota.data.imagen,
+    categorias: Array.isArray(nota.data.categorias)
+      ? nota.data.categorias
+      : [nota.data.categorias || "General"],
+    tipo: nota.data.tipo || "Noticia",
+    fecha: (nota.data.fecha && !isNaN(new Date(nota.data.fecha).getTime())) 
+      ? new Date(nota.data.fecha) 
+      : new Date(),
+  },
+}));
 
-// 6. Filtramos por la categoría actual y ordenamos de más NUEVA a más VIEJA
+// 5. FILTRO A PRUEBA DE BALAS: Ignora mayúsculas, espacios y guiones para que siempre coincida
+const normalizar = (texto) => String(texto).toLowerCase().replace(/\s+/g, '').replace(/-/g, '');
+
 const noticiasDeCategoria = todasLasNotas
   .filter((noticia) =>
     noticia.data.categorias.some(
-      (cat) => String(cat).toLowerCase() === String(categoria.slug).toLowerCase()
+      (cat) => normalizar(cat) === normalizar(categoria.slug)
     )
   )
   .sort((a, b) => b.data.fecha.getTime() - a.data.fecha.getTime());
 ---
 
-<!-- TU HTML EXACTO AL 100% (Sin tocar ni una clase ni un ternary) -->
+<!-- TU HTML EXACTO AL 100% -->
 <BaseLayout titulo={categoria.nombre}>
   <section class="seccion-noticias">
     <div class="seccion-noticias__encabezado">

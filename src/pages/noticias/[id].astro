@@ -1,93 +1,53 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/article.css";
-import { db, Noticias, eq } from "astro:db";
 import { getCollection, render } from "astro:content";
-// 👇 IMPORTAMOS LA HERRAMIENTA PARA ACHICAR LAS FOTOS
 import { Image } from "astro:assets"; 
 
-
 export async function getStaticPaths() {
-  let rutas = [];
+  // 1. Buscamos todas las notas de Decap CMS (Markdown)
+  const notasMD = await getCollection("noticias");
+  
+  // 2. Armamos las rutas
+  const rutas = notasMD.map((nota) => ({
+    params: { id: String(nota.id || nota.slug) },
+    props: { nota }, // Le pasamos la nota entera a la página
+  }));
 
-  // 1. Buscamos todos los IDs de la base de datos
-  try {
-    const notasDB = await db.select().from(Noticias).all();
-    const rutasDB = notasDB.map((nota) => ({
-      params: { id: String(nota.id) },
-    }));
-    rutas.push(...rutasDB);
-  } catch (e) {}
-
-  // 2. Buscamos todos los IDs de las notas viejas (Markdown)
-  try {
-    const notasMD = await getCollection("noticias");
-    const rutasMD = notasMD.map((nota) => ({
-      params: { id: String(nota.id || nota.slug) },
-    }));
-    rutas.push(...rutasMD);
-  } catch (e) {}
-
-  // Le entregamos la lista completa a Astro para que arme las páginas
   return rutas;
 }
 
-const { id } = Astro.params;
-if (!id) {
+// Recibimos la nota directamente por las props (mucho más rápido)
+const { nota } = Astro.props;
+
+if (!nota) {
   return Astro.redirect("/404");
 }
 
-let notaDB = null;
-try {
-  const idNum = Number(id);
-  if (!isNaN(idNum)) {
-    notaDB = await db.select().from(Noticias).where(eq(Noticias.id, idNum)).get();
-  }
-  if (!notaDB) {
-    notaDB = await db.select().from(Noticias).where(eq(Noticias.id, String(id))).get();
-  }
-} catch (e) {}
+// Renderizamos el cuerpo de la noticia
+const { Content } = await render(nota);
 
-let notaMD = null;
-let ContentMD = null;
-if (!notaDB) {
-  const viejas = await getCollection("noticias");
-  notaMD = viejas.find((n) => n.id === id || n.slug === id);
-  if (notaMD) {
-    const rendered = await render(notaMD);
-    ContentMD = rendered.Content;
-  }
-}
+// Extraemos los datos del panel CMS
+const titulo = nota.data.titulo;
+const bajada = nota.data.bajada;
+const imagenUrl = nota.data.imagen;
+const audioUrl = nota.data.audio || null; // Soporte para los audios de la Fase 1
+const galeria = nota.data.galeria || [];
 
-if (!notaDB && !notaMD) {
-  return Astro.redirect("/404");
-}
-
-const titulo = notaDB ? notaDB.titulo : notaMD.data.titulo;
-const bajada = notaDB ? notaDB.bajada : notaMD.data.bajada;
-const imagenUrl = notaDB ? notaDB.imagenUrl : notaMD.data.imagen;
-const audioUrl = notaDB ? notaDB.audioUrl : null;
-const cuerpoText = notaDB ? notaDB.cuerpo : null;
-const galeria = notaDB && Array.isArray(notaDB.galeriaUrls) 
-  ? notaDB.galeriaUrls 
-  : (notaMD?.data?.galeria || []);
-  
-// 👇 AGREGAMOS LA VARIABLE DE LA CATEGORÍA Y LA FECHA
-const categoria = notaDB ? notaDB.categoria : (notaMD?.data?.categoria || 'Automovilismo');
+// Tomamos la categoría principal para la navegación
+const categoria = Array.isArray(nota.data.categorias) 
+  ? nota.data.categorias[0] 
+  : (nota.data.categorias || 'Automovilismo');
 
 // 👇 TOMAMOS LA FECHA DE LA DB Y LA CONVERTIMOS PERFECTO 👇
-const fechaCruda = notaDB ? notaDB.fecha : notaMD?.data?.fecha;
+const fechaCruda = nota.data.fecha;
 let fechaFormateada = "";
 
 if (fechaCruda) {
-  // 1. Forzamos a que se convierta en un número matemático real
   const timestamp = Number(fechaCruda);
-  
-  // 2. Si se pudo convertir a número, lo usamos. Si no, intentamos leerlo normal.
   const fechaObj = !isNaN(timestamp) ? new Date(timestamp) : new Date(fechaCruda);
 
   if (!isNaN(fechaObj)) {
-    // 3. Usamos getUTC para evitar que por el huso horario de Argentina te reste un día
     const dia = fechaObj.getUTCDate();
     const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
     const mes = meses[fechaObj.getUTCMonth()];
@@ -111,7 +71,7 @@ if (fechaCruda) {
       <nav class="nota__migas">
       </nav>
       
-     <!-- 👇 ACÁ PONEMOS LA FECHA YA LIMPIA Y FORMATEADA 👇 -->
+      <!-- 👇 ACÁ PONEMOS LA FECHA YA LIMPIA Y FORMATEADA 👇 -->
       {fechaFormateada && (
         <span class="nota__fecha">{fechaFormateada}</span>
       )}
@@ -133,15 +93,12 @@ if (fechaCruda) {
       />
     )}
 
-    <!-- DIBUJAMOS EL CONTENIDO: Sea texto de DB o componente Markdown viejo -->
+    <!-- DIBUJAMOS EL CONTENIDO DEL PANEL CMS -->
     <div class="nota__contenido" style="white-space: pre-wrap;">
-      {notaDB ? (
-        cuerpoText
-      ) : (
-        ContentMD && <ContentMD />
-      )}
+       <Content />
     </div>
 
+    <!-- REPRODUCTOR DE AUDIO OPCIONAL -->
     {audioUrl && (
       <div style="margin: 20px 0;">
         <audio controls src={audioUrl} style="width: 100%;"></audio>
@@ -217,7 +174,7 @@ if (fechaCruda) {
         <div class="nota__galeria-grilla">
           {galeria.map((foto) => (
             <Image
-              src={foto}
+              src={foto.foto}
               alt={`Foto de galería - ${titulo}`}
               width={800} 
               height={533}
@@ -239,13 +196,11 @@ if (fechaCruda) {
   </article>
 </BaseLayout>
 
+<!-- LOS SCRIPTS PARA INSTAGRAM Y LA GALERIA -->
 <script>
-  // Buscamos el botón de Instagram
   const btnIg = document.getElementById('btn-ig-share');
-
   if (btnIg) {
     btnIg.addEventListener('click', async () => {
-      // Verificamos si el navegador (celular) soporta compartir de forma nativa
       if (navigator.share) {
         try {
           await navigator.share({
@@ -326,34 +281,6 @@ if (fechaCruda) {
       mostrarFoto(indiceActual - 1);
     } else if (e.key === "ArrowRight") {
       mostrarFoto(indiceActual + 1);
-    }
-  });
-
-  const txtIg = document.getElementById("txt-ig");
-
-  btnIg?.addEventListener("click", async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: document.title,
-          url: window.location.href,
-        });
-        return;
-      } catch (err) {
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      if (txtIg) {
-        const textoOriginal = txtIg.innerText;
-        txtIg.innerText = "¡Enlace copiado!";
-        setTimeout(() => {
-          txtIg.innerText = textoOriginal;
-        }, 2000);
-      }
-    } catch (e) {
-      console.error("No se pudo copiar el enlace", e);
     }
   });
 </script>
