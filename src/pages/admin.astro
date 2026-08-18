@@ -4,7 +4,7 @@ export const prerender = false;
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { db, Votos, Categorias, Noticias } from "astro:db";
 
-// 1. Traemos categorías, votos y AHORA TAMBIÉN LAS NOTICIAS DE LA DB
+// 1. Traemos categorías, votos y notas (Para mantener tu código a salvo)
 const categoriasDB = await db.select().from(Categorias);
 const notasDB = await db.select().from(Noticias).all();
 
@@ -51,20 +51,20 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
       </header>
 
       <div class="opciones-grilla" id="menu-principal">
-        <!-- TARJETA 1: REDACTOR (CREAR NOTA NUEVA) -->
+        <!-- TARJETA 1: REDACTOR (LLEVA A DECAP CMS) -->
         <div class="opcion-card" id="card-redactor">
           <div class="opcion-icono">📝</div>
           <h3>Redactor de Notas</h3>
           <p>Escribí y formateá artículos para la web de forma rápida.</p>
-          <a href="/admin/redactor" class="btn-rojo" style="text-decoration: none; display: inline-block;">Nueva Nota</a>
+          <a href="/panel-noticias" class="btn-rojo" style="text-decoration: none; display: inline-block;">Nueva Nota</a>
         </div>
 
-        <!-- TARJETA 2: GESTOR DE NOTAS (EDITAR / BORRAR) -->
+        <!-- TARJETA 2: GESTOR DE NOTAS (LLEVA A DECAP CMS) -->
         <div class="opcion-card" id="card-gestor-notas">
           <div class="opcion-icono">📚</div>
           <h3>Gestor de Notas</h3>
           <p>Revisá tus notas publicadas, editá su contenido o borralas de la base de datos.</p>
-          <button class="btn-rojo">Ver Mis Notas</button>
+          <a href="/panel-noticias" class="btn-rojo" style="text-decoration: none; display: inline-block;">Ver Mis Notas</a>
         </div>
 
         <!-- TARJETA 3: PILOTO DE LA FECHA -->
@@ -76,7 +76,7 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
         </div>
       </div>
 
-      <!-- 3. MÓDULO: GESTIÓN DE NOTAS (LISTAR, EDITAR Y BORRAR) -->
+      <!-- 3. MÓDULO: GESTIÓN DE NOTAS (OCULTO COMO RESPALDO) -->
       <div id="seccion-notas" class="seccion-modulo oculto">
         <div class="modulo-header">
           <button id="btn-volver-notas" class="btn-secundario">← Volver al Menú</button>
@@ -94,9 +94,7 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
                   <span>Categoría: <b>{nota.categorias}</b> | Autor: {nota.autor || "Redacción CV77"}</span>
                 </div>
                 <div class="nota-admin-botones">
-                  <!-- EDITAR: TE LLEVA DIRECTO AL REDACTOR CON EL ID -->
                   <a href={`/admin/redactor?id=${nota.id}`} class="btn-editar">✏️ Editar</a>
-                  <!-- BORRAR: ELIMINA LA NOTA DE LA DB -->
                   <button class="btn-borrar btn-borrar-nota" data-id={nota.id}>🗑️ Borrar</button>
                 </div>
               </div>
@@ -177,12 +175,12 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
 
   const menuPrincipal = document.getElementById("menu-principal");
   const seccionVotos = document.getElementById("seccion-votos");
-  const seccionNotas = document.getElementById("seccion-notas");
   const cardGestorVotos = document.getElementById("card-gestor-votos");
-  const cardGestorNotas = document.getElementById("card-gestor-notas");
-  const cardRedactor = document.getElementById("card-redactor");
   const btnVolverMenu = document.getElementById("btn-volver-menu");
-  const btnVolverNotas = document.getElementById("btn-volver-notas");
+  
+  // Nombramos las tarjetas de notas
+  const cardRedactor = document.getElementById("card-redactor");
+  const cardGestorNotas = document.getElementById("card-gestor-notas");
 
   const pestanaBtns = document.querySelectorAll(".pestana-btn");
   const pestanaContenidos = document.querySelectorAll(".pestana-contenido");
@@ -205,6 +203,15 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
     inputPass.value = "";
   });
 
+  // 👇 ACÁ ESTÁ LA MAGIA NUEVA: Llevamos las dos tarjetas a Decap CMS
+  cardRedactor?.addEventListener("click", () => {
+    window.location.href = "/panel-noticias";
+  });
+
+  cardGestorNotas?.addEventListener("click", () => {
+    window.location.href = "/panel-noticias";
+  });
+
   // Navegación Votos
   cardGestorVotos?.addEventListener("click", () => {
     menuPrincipal?.classList.add("oculto");
@@ -214,22 +221,6 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
   btnVolverMenu?.addEventListener("click", () => {
     seccionVotos?.classList.add("oculto");
     menuPrincipal?.classList.remove("oculto");
-  });
-
-  // Navegación Notas (Ver / Editar / Borrar)
-  cardGestorNotas?.addEventListener("click", () => {
-    menuPrincipal?.classList.add("oculto");
-    seccionNotas?.classList.remove("oculto");
-  });
-
-  btnVolverNotas?.addEventListener("click", () => {
-    seccionNotas?.classList.add("oculto");
-    menuPrincipal?.classList.remove("oculto");
-  });
-
-  // Ir a crear nota nueva
-  cardRedactor?.addEventListener("click", () => {
-    window.location.href = "/admin/redactor";
   });
 
   // Pestañas Pilotos
@@ -274,34 +265,6 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
     }
   });
 
-  // 👇 LÓGICA DE BORRADO DE NOTAS
-  const botonesBorrar = document.querySelectorAll(".btn-borrar-nota");
-  botonesBorrar.forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const id = btn.getAttribute("data-id");
-      if (!id) return;
-
-      const confirmar = confirm(`¿Estás seguro de que querés borrar la nota #${id} definitivamente de Cuenta Vueltas 77?`);
-      if (!confirmar) return;
-
-      try {
-        const response = await fetch("/api/borrar-nota", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: Number(id) })
-        });
-
-        if (response.ok) {
-          alert("¡Nota borrada con éxito!");
-          window.location.reload(); // Recargamos la lista
-        } else {
-          alert("Error al intentar borrar la nota.");
-        }
-      } catch (error) {
-        alert("Error de conexión.");
-      }
-    });
-  });
 </script>
 
 <style>
@@ -393,13 +356,12 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: transparent; /* Nos aseguramos de que sea 100% transparente */
-  border-bottom: 2px solid rgba(225, 6, 0, 0.45); /* Línea roja sutil estilo motorsport */
+  background: transparent;
+  border-bottom: 2px solid rgba(225, 6, 0, 0.45);
   padding-bottom: 1.2rem;
   margin-bottom: 2.5rem;
 }
   
-
   .admin-header h1 {
     font-family: 'Rajdhani', sans-serif;
     font-size: 2.5rem;
@@ -463,7 +425,6 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
     margin: 0;
   }
 
-  /* --- ESTILOS DE LA LISTA DE NOTAS --- */
   .lista-notas-tabla {
     display: flex;
     flex-direction: column;
@@ -528,7 +489,6 @@ const resultadosOrdenados = Object.entries(conteoPorPiloto)
     color: #fff;
   }
 
-  /* --- MÓDULO PILOTOS --- */
   .pestanas-nav {
     display: flex;
     gap: 1rem;
