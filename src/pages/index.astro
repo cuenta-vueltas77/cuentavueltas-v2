@@ -1,56 +1,34 @@
 ---
-
 import { getCollection } from "astro:content";
-import { db, Noticias } from "astro:db";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import NewsCard from "../components/NewsCard.astro";
 import Header from "../components/Header.astro";
 
-// 2. Traemos las notas nuevas (Astro DB) y las viejas (Markdown)
-const notasDB = await db.select().from(Noticias).all();
+// 1. Traemos las notas de Markdown (Las que carga tu novia desde Decap CMS)
 const notasMD = await getCollection("noticias");
 
-// 3. UNIFICACIÓN HÍBRIDA: Armamos una lista única con el formato exacto que espera tu NewsCard
-const todasLasNotas = [
-  // A) Mapeamos las notas nuevas de Astro DB
-  ...notasDB.map((nota) => ({
-    id: String(nota.id),
-    data: {
-      titulo: nota.titulo,
-      imagen: nota.imagenUrl,
-      // Lo convertimos en array [ "tp1100" ] para que tu .categorias[0] funcione impecable
-      categorias: Array.isArray(nota.categorias)
-        ? nota.categorias
-        : [nota.categorias || "general"],
-      tipo: nota.tipo || "nota",
-      fecha: (nota.fecha && !isNaN(new Date(nota.fecha).getTime()))
-  ? new Date(nota.fecha)
-  : new Date(),
-      mostrarEnInicio: nota.mostrarInicio !== false,
-    },
-  })),
+// 2. Armamos la lista con el formato exacto que espera tu NewsCard
+const todasLasNotas = notasMD.map((nota) => ({
+  id: nota.slug || nota.id,
+  data: {
+    titulo: nota.data.titulo,
+    imagen: nota.data.imagen,
+    // Aseguramos que la categoría sea siempre una lista [ "Automovilismo" ]
+    categorias: Array.isArray(nota.data.categorias)
+      ? nota.data.categorias
+      : [nota.data.categorias || "General"],
+    tipo: nota.data.tipo || "Noticia",
+    // Aseguramos que la fecha se lea correctamente del Frontmatter
+    fecha: (nota.data.fecha && !isNaN(new Date(nota.data.fecha).getTime()))
+      ? new Date(nota.data.fecha)
+      : new Date(),
+    // Cubrimos tanto si lo escribiste como mostrarEnInicio o mostrarInicio
+    mostrarEnInicio:
+      nota.data.mostrarEnInicio !== false && nota.data.mostrarInicio !== false,
+  },
+}));
 
-  // B) Mapeamos las notas viejas de Markdown
-  ...notasMD.map((nota) => ({
-    id: nota.id || nota.slug,
-    data: {
-      titulo: nota.data.titulo,
-      imagen: nota.data.imagen,
-      categorias: Array.isArray(nota.data.categorias)
-        ? nota.data.categorias
-        : [nota.data.categorias || "general"],
-      tipo: nota.data.tipo || "nota",
-      fecha: (nota.fecha && !isNaN(new Date(nota.fecha).getTime()))
-  ? new Date(nota.fecha)
-  : new Date(),
-      // Cubrimos tanto si lo escribiste como mostrarEnInicio o mostrarInicio
-      mostrarEnInicio:
-        nota.data.mostrarEnInicio !== false && nota.data.mostrarInicio !== false,
-    },
-  })),
-];
-
-// 4. Filtramos las que van al Inicio y ordenamos de más NUEVA a más VIEJA
+// 3. Filtramos las que van al Inicio y ordenamos de más NUEVA a más VIEJA
 const noticiasDelInicio = todasLasNotas
   .filter((noticia) => noticia.data.mostrarEnInicio)
   .sort((a, b) => b.data.fecha.getTime() - a.data.fecha.getTime());
