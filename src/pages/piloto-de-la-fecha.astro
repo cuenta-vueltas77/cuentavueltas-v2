@@ -1,7 +1,7 @@
 ---
 // src/pages/piloto-de-la-fecha.astro
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { db, Categorias } from "astro:db"
+
 
 // 👇 ACÁ EDITÁS LOS CANDIDATOS DE CADA FECHA SÚPER RÁPIDO
 const categorias = await db.select().from(Categorias);

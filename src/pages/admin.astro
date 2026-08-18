@@ -1,28 +1,15 @@
 ---
+
 // src/pages/admin.astro
-export const prerender = false;
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { db, Votos, Categorias, Noticias } from "astro:db";
 
-// 1. Traemos categorías, votos y notas (Para mantener tu código a salvo)
-const categoriasDB = await db.select().from(Categorias);
-const notasDB = await db.select().from(Noticias).all();
+// 🛑 ASTRO DB DESACTIVADO TEMPORALMENTE HASTA CONECTAR TURSO (FASE 2) 🛑
+// Dejamos las variables vacías para que el diseño no se rompa en Vercel
+const categoriasDB = [];
+const notasDB = [];
+const totalVotos = 0;
+const resultadosOrdenados = [];
 
-const todosLosVotos = await db.select().from(Votos);
-const totalVotos = todosLosVotos.length;
-
-const conteoPorPiloto = todosLosVotos.reduce((acc, voto) => {
-  acc[voto.piloto] = (acc[voto.piloto] || 0) + 1;
-  return acc;
-}, {} as Record<string, number>);
-
-const resultadosOrdenados = Object.entries(conteoPorPiloto)
-  .map(([piloto, votos]) => ({
-    piloto,
-    votos,
-    porcentaje: totalVotos > 0 ? Math.round((votos / totalVotos) * 100) : 0
-  }))
-  .sort((a, b) => b.votos - a.votos);
 ---
 
 <BaseLayout titulo="Centro de Mando - Admin">
