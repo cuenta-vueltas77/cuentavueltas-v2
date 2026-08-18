@@ -1,12 +1,36 @@
 ---
-export const prerender = false
-
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import "../../styles/article.css";
 import { db, Noticias, eq } from "astro:db";
 import { getCollection, render } from "astro:content";
 // 👇 IMPORTAMOS LA HERRAMIENTA PARA ACHICAR LAS FOTOS
 import { Image } from "astro:assets"; 
+
+
+export async function getStaticPaths() {
+  let rutas = [];
+
+  // 1. Buscamos todos los IDs de la base de datos
+  try {
+    const notasDB = await db.select().from(Noticias).all();
+    const rutasDB = notasDB.map((nota) => ({
+      params: { id: String(nota.id) },
+    }));
+    rutas.push(...rutasDB);
+  } catch (e) {}
+
+  // 2. Buscamos todos los IDs de las notas viejas (Markdown)
+  try {
+    const notasMD = await getCollection("noticias");
+    const rutasMD = notasMD.map((nota) => ({
+      params: { id: String(nota.id || nota.slug) },
+    }));
+    rutas.push(...rutasMD);
+  } catch (e) {}
+
+  // Le entregamos la lista completa a Astro para que arme las páginas
+  return rutas;
+}
 
 const { id } = Astro.params;
 if (!id) {
@@ -305,7 +329,6 @@ if (fechaCruda) {
     }
   });
 
-  const btnIg = document.getElementById("btn-ig-share");
   const txtIg = document.getElementById("txt-ig");
 
   btnIg?.addEventListener("click", async () => {
