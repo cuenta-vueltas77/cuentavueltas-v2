@@ -9,7 +9,7 @@ categorias:
 tipo: Noticia
 imagen: /uploads/migueljpeg.webp
 galeria: []
-audio: /uploads/abelito-entrevista.mp3
+audio: ''
 ---
 
 Miguel Otero logró finalizar en la **quinta posición en Trelew**, en una competencia donde tuvo que sobreponerse a distintos inconvenientes con el funcionamiento de su auto. A pesar de las fallas, el piloto pudo mantenerse en carrera y completar una buena actuación, sumando un resultado positivo en una jornada exigente.
