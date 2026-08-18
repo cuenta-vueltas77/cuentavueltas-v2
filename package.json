@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build --remote"
+    "build": "astro db push --remote && astro build --remote"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
