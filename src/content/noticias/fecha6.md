@@ -10,7 +10,8 @@ categorias:
 tipo: Noticia
 imagen: /uploads/IMG_2422.jpeg
 galeria:
-  - /uploads/IMG_2320 (1).jpeg
+  - /uploads/IMG_7741.jpeg
+  - /uploads/IMG_7868.jpeg
 audio: ''
 ---
 
