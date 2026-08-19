@@ -12,6 +12,7 @@ imagen: /uploads/IMG_2452.JPG
 galeria:
   - /uploads/IMG_2241.JPG
   - /uploads/IMG_2388.JPG
+  - /uploads/IMG_2313.JPG
 audio: ''
 ---
 
