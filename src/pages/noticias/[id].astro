@@ -167,20 +167,22 @@ if (fechaCruda) {
       </div>
     </div>
 
-    <!-- 📷 GALERÍA DE FOTOS CORREGIDA PARA ELIMINAR EL DELAY -->
+    <!-- 📷 GALERÍA DE FOTOS CORREGIDA Y BLINDADA -->
     {galeria.length > 0 && (
       <section class="nota__galeria">
         <h3 class="nota__galeria-titulo">Galería de fotos</h3>
         <div class="nota__galeria-grilla">
           {galeria.map((foto) => (
-            <Image
-              src={foto.foto}
-              alt={`Foto de galería - ${titulo}`}
-              width={800} 
-              height={533}
-              format="webp"
-              class="foto-clickable"
-            />
+            foto.foto && (
+              <Image
+                src={foto.foto}
+                alt={`Foto de galería - ${titulo}`}
+                width={800} 
+                height={533}
+                format="webp"
+                class="foto-clickable"
+              />
+            )
           ))}
         </div>
       </section>
