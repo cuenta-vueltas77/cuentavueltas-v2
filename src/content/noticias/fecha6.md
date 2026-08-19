@@ -8,10 +8,10 @@ categorias:
   - General
   - TC Austral
 tipo: Noticia
-imagen: /uploads/IMG_2422.jpeg
+imagen: /uploads/IMG_2422.JPG
 galeria:
-  - /uploads/IMG_7741.jpeg
-  - /uploads/IMG_7868.jpeg
+  - /uploads/IMG_2242.JPG
+  - /uploads/IMG_2388.JPG
 audio: ''
 ---
 
