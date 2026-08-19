@@ -2,38 +2,45 @@
 // src/pages/piloto-de-la-fecha.astro
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-// 👇 CONGELADO TEMPORALMENTE: Lista vacía para pasar el filtro de Vercel. 
-// En la Fase 2 lo conectamos a Turso.
+// 👇 ACÁ EDITÁS LOS PILOTOS CADA FIN DE SEMANA SÚPER FÁCIL
 const categorias = [
   {
-    id: 1,
-    siglas: "CV77",
-    nombre: "Votaciones Próximamente",
-    candidatos: ["Estamos instalando el nuevo sistema de votos"],
+    id: "tc_austral",
+    siglas: "TCA",
+    nombre: "TC Austral",
+    candidatos: ["Miguel Otero", "Sergio Larreguy", "Javier Hernandez"],
+  },
+  {
+    id: "tp_1100",
+    siglas: "1100",
+    nombre: "TP 1100",
+    candidatos: ["Walter Jones", "Daniel Urbieta", "Mariano Ayup"],
+  },
+  {
+    id: "r12",
+    siglas: "R12",
+    nombre: "Monomarca R12",
+    candidatos: ["Federico Turrez", "Jesús Sugman", "Alejandro Muñoz"],
   }
 ];
 ---
 
 <BaseLayout titulo="Piloto de la Fecha">
   <main class="piloto-contenedor">
-    <!-- ENCABEZADO -->
     <div class="piloto-header">
       <h1>Piloto de la Fecha</h1>
       <p>Votá al piloto más destacado del fin de semana en cada categoría.</p>
     </div>
 
-    <!-- GRILLA DE CATEGORÍAS -->
     <div class="categorias-grilla">
       {categorias.map((cat) => (
         <div class="categoria-card">
-          <!-- CASCO / ICONO DE LA CATEGORÍA -->
           <div class="casco-contenedor">
             <div class="casco-grafico">
               <span class="siglas-cat">{cat.siglas}</span>
             </div>
           </div>
 
-          <!-- INFO Y BOTÓN -->
           <div class="categoria-info">
             <h3>{cat.nombre}</h3>
             <p class="subtitulo">Votación abierta</p>
@@ -50,7 +57,7 @@ const categorias = [
       ))}
     </div>
 
-    <!-- MODAL / VENTANA DE VOTACIÓN (Oculto por defecto) -->
+    <!-- MODAL DE VOTACIÓN -->
     <div id="modal-votacion" class="modal-overlay oculto">
       <div class="modal-caja">
         <button id="btn-cerrar-modal" class="modal-cerrar">✕</button>
@@ -60,20 +67,12 @@ const categorias = [
         <form id="form-voto">
           <input type="hidden" id="input-categoria" name="categoria" value="" />
           
-          <div id="lista-candidatos" class="candidatos-opciones">
-            <!-- Se llena dinámicamente con JS al hacer clic -->
-          </div>
+          <div id="lista-candidatos" class="candidatos-opciones"></div>
 
-          <!-- OPCIÓN OTRO -->
           <label class="opcion-radio otro-label">
             <input type="radio" name="piloto" value="OTRO" id="radio-otro" />
             <span>Otro:</span>
-            <input 
-              type="text" 
-              id="input-otro-nombre" 
-              placeholder="Escribí el nombre y apellido..." 
-              disabled 
-            />
+            <input type="text" id="input-otro-nombre" placeholder="Escribí nombre y apellido..." disabled />
           </label>
 
           <button type="submit" class="btn-enviar-voto">Enviar Voto</button>
@@ -84,7 +83,6 @@ const categorias = [
 </BaseLayout>
 
 <script>
-  // LÓGICA DE LA VENTANA MODAL PARA VOTAR SIN SALIR DE LA WEB
   const botonesVotar = document.querySelectorAll('.btn-votar');
   const modal = document.getElementById('modal-votacion');
   const btnCerrar = document.getElementById('btn-cerrar-modal');
@@ -113,10 +111,7 @@ const categorias = [
         `).join('');
       }
 
-      if (inputOtroNombre) {
-        inputOtroNombre.value = '';
-        inputOtroNombre.disabled = true;
-      }
+      if (inputOtroNombre) { inputOtroNombre.value = ''; inputOtroNombre.disabled = true; }
       if (radioOtro) radioOtro.checked = false;
 
       modal?.classList.remove('oculto');
@@ -127,24 +122,47 @@ const categorias = [
     const target = e.target as HTMLInputElement;
     if (target.name === 'piloto') {
       if (target.value === 'OTRO') {
-        inputOtroNombre.disabled = false;
-        inputOtroNombre.focus();
+        inputOtroNombre.disabled = false; inputOtroNombre.focus();
       } else {
-        inputOtroNombre.disabled = true;
-        inputOtroNombre.value = '';
+        inputOtroNombre.disabled = true; inputOtroNombre.value = '';
       }
     }
   });
 
-  btnCerrar?.addEventListener('click', () => {
-    modal?.classList.add('oculto');
-  });
+  btnCerrar?.addEventListener('click', () => modal?.classList.add('oculto'));
 
+  // EL ENVÍO REAL A LA BASE DE DATOS TURSO
   formVoto?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    alert("Votación pausada temporalmente. ¡Volvé en unos minutos!");
-    modal?.classList.add('oculto');
-    formVoto.reset();
+    const btnSubmit = formVoto.querySelector('.btn-enviar-voto') as HTMLButtonElement;
+    btnSubmit.textContent = 'Enviando...';
+    btnSubmit.disabled = true;
+
+    const formData = new FormData(formVoto);
+    let pilotoVotado = formData.get('piloto') as string;
+    if (pilotoVotado === 'OTRO') pilotoVotado = inputOtroNombre.value.trim() || 'Desconocido';
+    const categoria = formData.get('categoria') as string;
+
+    try {
+      const res = await fetch('/api/votar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categoria, piloto: pilotoVotado })
+      });
+
+      if (res.ok) {
+        alert(`¡Listo! Tu voto para ${pilotoVotado} fue guardado.`);
+        modal?.classList.add('oculto');
+        formVoto.reset();
+      } else {
+        alert('Hubo un problema. Intentá de nuevo.');
+      }
+    } catch (error) {
+      alert('Error de conexión.');
+    } finally {
+      btnSubmit.textContent = 'Enviar Voto';
+      btnSubmit.disabled = false;
+    }
   });
 </script>
 
