@@ -11,9 +11,9 @@ export async function POST({ request }) {
       return new Response(JSON.stringify({ error: "Faltan datos" }), { status: 400 });
     }
 
-    // El cartero mete el voto en la urna de Turso
+    // El cartero mete el voto en la urna NUEVA de Turso
     await turso.execute({
-      sql: "INSERT INTO votos (categoria_id, piloto) VALUES (?, ?)",
+      sql: "INSERT INTO votos_nuevos (categoria_id, piloto) VALUES (?, ?)",
       args: [categoria, piloto],
     });
 
