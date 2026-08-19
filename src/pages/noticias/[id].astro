@@ -167,23 +167,26 @@ if (fechaCruda) {
       </div>
     </div>
 
-    <!-- 📷 GALERÍA DE FOTOS CORREGIDA Y BLINDADA -->
+    <!-- 📷 GALERÍA DE FOTOS CORREGIDA Y BLINDADA DEFINITIVA -->
     {galeria.length > 0 && (
       <section class="nota__galeria">
         <h3 class="nota__galeria-titulo">Galería de fotos</h3>
         <div class="nota__galeria-grilla">
-          {galeria.map((foto) => (
-            foto.foto && (
-              <Image
-                src={foto.foto}
+          {galeria.map((item) => {
+            // El radar: detecta la ruta exacta sin importar cómo la guarde el CMS
+            const rutaFoto = typeof item === 'string' ? item : item.foto;
+            
+            return rutaFoto ? (
+              <img
+                src={rutaFoto}
                 alt={`Foto de galería - ${titulo}`}
-                width={800} 
-                height={533}
-                format="webp"
                 class="foto-clickable"
+                width="800"
+                height="533"
+                loading="lazy"
               />
-            )
-          ))}
+            ) : null;
+          })}
         </div>
       </section>
     )}
