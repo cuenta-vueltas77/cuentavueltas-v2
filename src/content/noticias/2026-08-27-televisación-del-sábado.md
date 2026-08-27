@@ -13,8 +13,11 @@ audio: ''
 ---
 
 El piloto comodorense volverá a representar a la ciudad en una nueva fecha del campeonato, a bordo del Peugeot 208 del Ale Bucci Racing, en una temporada que lo encuentra dentro de los diez mejores de la categoría.
+
 Blotta llega a Oberá ubicado en la 10.ª posición del campeonato con 112 puntos, en un certamen que comienza a ingresar en una etapa cada vez más importante. Tomás Vitar y Francisco Coltrinari lideran con 201 unidades, mientras que Exequiel Bastidas se mantiene tercero con 198.
+
 Para Renzo será una nueva oportunidad de sumar puntos importantes y seguir peleando dentro del campeonato.
+
 La actividad comenzará el sábado con los entrenamientos y las dos tandas clasificatorias, mientras que el domingo se disputarán las series y la final de la Clase 2.
 
 ###### **CRONOGRAMA – CLASE 2**
