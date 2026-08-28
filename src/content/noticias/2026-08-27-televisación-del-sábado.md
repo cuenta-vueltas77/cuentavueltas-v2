@@ -8,6 +8,7 @@ categorias:
   - General
 tipo: Noticia
 imagen: /uploads/renzo.jpg
+credito_imagen: 'Gentileza: Prensa APAT'
 galeria: []
 audio: ''
 ---
