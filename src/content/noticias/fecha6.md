@@ -6,12 +6,12 @@ autor: Redacción CV77
 categorias:
   - Automovilismo
   - General
-  - TC Austral
 tipo: Noticia
-imagen: /uploads/IMG_2422.jpeg
+imagen: /uploads/IMG_2452.JPG
 galeria:
-  - /uploads/IMG_7741.jpeg
-  - /uploads/IMG_7868.jpeg
+  - /uploads/IMG_2241.JPG
+  - /uploads/IMG_2388.JPG
+  - /uploads/IMG_2313.JPG
 audio: ''
 ---
 

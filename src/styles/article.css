@@ -45,7 +45,12 @@
   max-width: 780px;
   font-family: "Inter", sans-serif;
   font-size: 1.1rem;
+<<<<<<< HEAD
   line-height: 1.5; 
+=======
+  line-height: 1.5;
+  color: #ededed;
+>>>>>>> 3058009ac33bdacb308a03ec29c2e972f59300aa
   text-align: justify;
   margin: 0 auto;
   
